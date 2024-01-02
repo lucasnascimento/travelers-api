@@ -1,13 +1,22 @@
 import bcrypt
-from flask import Flask, redirect, request, session, url_for
+from flask import Flask, jsonify, request
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    get_jwt_identity,
+    jwt_required,
+)
 
-from config import SQLALCHEMY_DATABASE_URI
+from config import JWT_SECRET_KEY, SQLALCHEMY_DATABASE_URI, APP_SECRET_KEY
 from database import db
 from model.user import User
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 db.init_app(app)
+
+app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
+jwt = JWTManager(app)
 
 
 def hash_password(password):
@@ -38,40 +47,29 @@ with app.app_context():
 
 
 # Set the secret key to some random bytes. Keep this really secret!
-app.secret_key = b"5c4990efccb1b1f609fda5eb7d92e8741e9779f9be5b7b99207c2f89e7abbc2a"
+app.secret_key = APP_SECRET_KEY
 
 
-@app.route("/")
-def index():
-    if "username" in session:
-        return f'Logged in as {session["username"]}'
-    return "You are not logged in"
-
-
-@app.route("/login", methods=["GET", "POST"])
+# Create a route to authenticate your users and return JWTs. The
+# create_access_token() function is used to actually generate the JWT.
+@app.route("/login", methods=["POST"])
 def login():
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        user = User.query.filter_by(email=username).first()
-        if user is None:
-            return redirect(url_for("login"))
-        if not check_password(password, user.hashed_password):
-            return redirect(url_for("login"))
+    username = request.json.get("username", None)
+    password = request.json.get("password", None)
+    user = User.query.filter_by(email=username).first()
 
-        session["username"] = request.form["username"]
-        return redirect(url_for("index"))
-    return """
-        <form method="post">
-            <p><input type=text name=username>
-            <p><input type=password name=password>
-            <p><input type=submit value=Login>
-        </form>
-    """
+    if (user is None) or (not check_password(password, user.hashed_password)):
+        return jsonify({"error": "bad_username_or_password"}), 401
+
+    access_token = create_access_token(identity=username)
+    return jsonify(access_token=access_token)
 
 
-@app.route("/logout")
-def logout():
-    # remove the username from the session if it's there
-    session.pop("username", None)
-    return redirect(url_for("index"))
+# Protect a route with jwt_required, which will kick out requests
+# without a valid JWT present.
+@app.route("/protected", methods=["GET"])
+@jwt_required()
+def protected():
+    # Access the identity of the current user with get_jwt_identity
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200
