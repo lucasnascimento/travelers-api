@@ -1,34 +1,21 @@
-import bcrypt
-from flask import Flask, jsonify, request
-from flask_jwt_extended import (
-    JWTManager,
-    create_access_token,
-    get_jwt_identity,
-    jwt_required,
-)
+from flask import Flask
+from flask_jwt_extended import JWTManager
 
 from config import JWT_SECRET_KEY, SQLALCHEMY_DATABASE_URI, APP_SECRET_KEY
 from database import db
 from model.user import User
+from routes.user import user_bp
 
 app = Flask(__name__)
+# Set the secret key to some random bytes. Keep this really secret!
+app.secret_key = APP_SECRET_KEY
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 db.init_app(app)
 
 app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 jwt = JWTManager(app)
 
-
-def hash_password(password):
-    password_bytes = password.encode("utf-8")
-    hashed_bytes = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
-    return hashed_bytes.decode("utf-8")
-
-
-def check_password(password, hashed_password):
-    password_bytes = password.encode("utf-8")
-    hashed_bytes = hashed_password.encode("utf-8")
-    return bcrypt.checkpw(password_bytes, hashed_bytes)
+app.register_blueprint(user_bp)
 
 
 with app.app_context():
@@ -37,39 +24,25 @@ with app.app_context():
     if not db.session.query(
         User.query.filter_by(email="email@email.com").exists()
     ).scalar():
-        db.session.add(
-            User(email="email@email.com", hashed_password=hash_password("MyPassword"))
-        )
+        db.session.add(User(email="email@email.com", password="MyPassword"))
         db.session.commit()
 
     users = db.session.execute(db.select(User)).scalars()
     app.logger.info(users)
 
 
-# Set the secret key to some random bytes. Keep this really secret!
-app.secret_key = APP_SECRET_KEY
+# Register a callback function that takes whatever object is passed in as the
+# identity when creating JWTs and converts it to a JSON serializable format.
+@jwt.user_identity_loader
+def user_identity_lookup(user: User):
+    return user.id
 
 
-# Create a route to authenticate your users and return JWTs. The
-# create_access_token() function is used to actually generate the JWT.
-@app.route("/login", methods=["POST"])
-def login():
-    username = request.json.get("username", None)
-    password = request.json.get("password", None)
-    user = User.query.filter_by(email=username).first()
-
-    if (user is None) or (not check_password(password, user.hashed_password)):
-        return jsonify({"error": "bad_username_or_password"}), 401
-
-    access_token = create_access_token(identity=username)
-    return jsonify(access_token=access_token)
-
-
-# Protect a route with jwt_required, which will kick out requests
-# without a valid JWT present.
-@app.route("/protected", methods=["GET"])
-@jwt_required()
-def protected():
-    # Access the identity of the current user with get_jwt_identity
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200
+# Register a callback function that loads a user from your database whenever
+# a protected route is accessed. This should return any python object on a
+# successful lookup, or None if the lookup failed for any reason (for example
+# if the user has been deleted from the database).
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    identity = jwt_data["sub"]
+    return User.query.filter_by(id=identity).one_or_none()
