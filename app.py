@@ -4,7 +4,10 @@ from flask_jwt_extended import JWTManager
 from config import JWT_SECRET_KEY, SQLALCHEMY_DATABASE_URI, APP_SECRET_KEY
 from database import db
 from model.user import User
+from model.token import TokenBlocklist
 from routes.user import user_bp
+
+from datetime import timedelta
 
 app = Flask(__name__)
 # Set the secret key to some random bytes. Keep this really secret!
@@ -12,7 +15,9 @@ app.secret_key = APP_SECRET_KEY
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 db.init_app(app)
 
+ACCESS_EXPIRES = timedelta(hours=1)
 app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
 jwt = JWTManager(app)
 
 app.register_blueprint(user_bp)
@@ -46,3 +51,12 @@ def user_identity_lookup(user: User):
 def user_lookup_callback(_jwt_header, jwt_data):
     identity = jwt_data["sub"]
     return User.query.filter_by(id=identity).one_or_none()
+
+
+# Callback function to check if a JWT exists in the database blocklist
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
+    jti = jwt_payload["jti"]
+    token = db.session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
+
+    return token is not None

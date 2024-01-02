@@ -1,6 +1,16 @@
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token, current_user, jwt_required
+from flask import Blueprint, jsonify, request
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    current_user,
+    get_jwt,
+    jwt_required,
+)
+
 from model.user import User
+from datetime import datetime, timezone
+from database import db
+from model.token import TokenBlocklist
 
 user_bp = Blueprint("user", __name__)
 
@@ -16,6 +26,16 @@ def login():
 
     access_token = create_access_token(identity=user)
     return jsonify(access_token=access_token)
+
+
+@user_bp.route("/logout", methods=["DELETE"])
+@jwt_required()
+def modify_token():
+    jti = get_jwt()["jti"]
+    now = datetime.now(timezone.utc)
+    db.session.add(TokenBlocklist(jti=jti, created_at=now))
+    db.session.commit()
+    return jsonify(msg="JWT revoked")
 
 
 @user_bp.route("/me", methods=["GET"])
