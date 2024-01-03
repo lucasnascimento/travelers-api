@@ -6,6 +6,7 @@ from database import db
 from model.user import User
 from model.token import TokenBlocklist
 from routes.user import user_bp
+from routes.institution import institution_bp
 
 from datetime import timedelta
 
@@ -21,6 +22,7 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
 jwt = JWTManager(app)
 
 app.register_blueprint(user_bp)
+app.register_blueprint(institution_bp)
 
 
 with app.app_context():
