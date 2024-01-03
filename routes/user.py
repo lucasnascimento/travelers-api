@@ -15,6 +15,23 @@ from model.token import TokenBlocklist
 user_bp = Blueprint("user", __name__)
 
 
+@user_bp.route("/create_account", methods=["POST"])
+def create_account():
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+
+    user = User.query.filter_by(email=email).one_or_none()
+    if user:
+        return jsonify("email_already_taken"), 409
+
+    user = User(email=email, password=password)
+    db.session.add(user)
+    db.session.commit()
+
+    access_token = create_access_token(identity=user)
+    return jsonify(access_token=access_token)
+
+
 @user_bp.route("/login", methods=["POST"])
 def login():
     username = request.json.get("username", None)
