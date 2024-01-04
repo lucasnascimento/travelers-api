@@ -23,18 +23,6 @@ app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
 jwt = JWTManager(app)
 
-with app.app_context():
-    db.create_all()
-
-    if not db.session.query(
-        User.query.filter_by(email="email@email.com").exists()
-    ).scalar():
-        db.session.add(User(email="email@email.com", password="MyPassword"))
-        db.session.commit()
-
-    users = db.session.execute(db.select(User)).scalars()
-    app.logger.info(users)
-
 
 # Register a callback function that takes whatever object is passed in as the
 # identity when creating JWTs and converts it to a JSON serializable format.
@@ -61,11 +49,26 @@ def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
 
     return token is not None
 
+
 # Register blueprints for routes
 # important do not move this to the top of the file
 # otherwise the config will not be loaded properly
 from routes.institution import institution_bp
 from routes.user import user_bp
+from routes.itinerary import itinerary_bp
 
 app.register_blueprint(user_bp)
 app.register_blueprint(institution_bp)
+app.register_blueprint(itinerary_bp)
+
+with app.app_context():
+    db.create_all()
+
+    if not db.session.query(
+        User.query.filter_by(email="email@email.com").exists()
+    ).scalar():
+        db.session.add(User(email="email@email.com", password="MyPassword"))
+        db.session.commit()
+
+    users = db.session.execute(db.select(User)).scalars()
+    app.logger.info(users)
