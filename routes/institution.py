@@ -74,6 +74,7 @@ def upload_logo(institution_id):
         mime_type = mimetypes.guess_type(filename)[0]
         file.seek(0, os.SEEK_END)
         size_bytes = file.tell()
+        file.seek(0)
         path = os.path.join(UPLOAD_FOLDER, filename)
         new_file = File(
             id=new_uuid,

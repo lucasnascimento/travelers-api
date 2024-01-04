@@ -27,6 +27,12 @@ class File(db.Model):
     )
 
     def to_dict(self):
+        path = self.path.split("static")[1]
+
         return {
-            c.key: getattr(self, c.key) for c in db.inspect(self).mapper.column_attrs
+            "id": str(self.id),
+            "path": f"/static{path}",
+            "file_name": self.file_name,
+            "mime": self.mime,
+            "size_bytes": self.size_bytes,
         }
