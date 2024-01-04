@@ -1,6 +1,14 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify, request
+from werkzeug.utils import secure_filename
+
 from database import db
+from model.file import File
 from model.institution import Institution
+from config import UPLOAD_FOLDER
+import mimetypes
+import uuid
+
+import os
 
 institution_bp = Blueprint("institution", __name__)
 
@@ -45,4 +53,42 @@ def delete_institution(institution_id):
         return jsonify(error="not_found"), 404
     institution.is_deleted = True
     db.session.commit()
+    return jsonify(success=True)
+
+
+@institution_bp.route("/institution/<institution_id>/upload_logo", methods=["POST"])
+def upload_logo(institution_id):
+    # Check if the post request has the file part
+    if "file" not in request.files:
+        return jsonify(error="no_file_part"), 400
+    file = request.files["file"]
+
+    # If the user does not select a file, the browser also
+    # sends an empty part with no filename.
+    if file.filename == "":
+        return jsonify(error="no_file_selected"), 400
+
+    if file:
+        new_uuid = uuid.uuid4()
+        filename = secure_filename(f"{new_uuid}__{file.filename}")
+        mime_type = mimetypes.guess_type(filename)[0]
+        file.seek(0, os.SEEK_END)
+        size_bytes = file.tell()
+        path = os.path.join(UPLOAD_FOLDER, filename)
+        new_file = File(
+            id=new_uuid,
+            mime=mime_type,
+            path=path,
+            file_name=filename,
+            region="local",
+            size_bytes=size_bytes,
+        )
+        db.session.add(new_file)
+        db.session.flush()
+        file.save(os.path.join(UPLOAD_FOLDER, filename))
+        db.session.query(Institution).filter_by(id=institution_id).update(
+            {"file_id": str(new_file.id)}
+        )
+        db.session.commit()
+
     return jsonify(success=True)

@@ -6,7 +6,7 @@ import uuid
 
 
 class TokenBlocklist(db.Model):
-    table_name = "token_blocklist"
+    __table_name__ = "token_blocklist"
     id: Mapped[str] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )

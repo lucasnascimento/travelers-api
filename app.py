@@ -1,16 +1,18 @@
+from datetime import timedelta
+
 from flask import Flask
 from flask_jwt_extended import JWTManager
 
-from config import JWT_SECRET_KEY, SQLALCHEMY_DATABASE_URI, APP_SECRET_KEY
+import config
+from config import APP_SECRET_KEY, JWT_SECRET_KEY, SQLALCHEMY_DATABASE_URI
 from database import db
-from model.user import User
 from model.token import TokenBlocklist
-from routes.user import user_bp
-from routes.institution import institution_bp
+from model.user import User
 
-from datetime import timedelta
 
 app = Flask(__name__)
+config.init_app(app)
+
 # Set the secret key to some random bytes. Keep this really secret!
 app.secret_key = APP_SECRET_KEY
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
@@ -20,10 +22,6 @@ ACCESS_EXPIRES = timedelta(hours=1)
 app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
 jwt = JWTManager(app)
-
-app.register_blueprint(user_bp)
-app.register_blueprint(institution_bp)
-
 
 with app.app_context():
     db.create_all()
@@ -62,3 +60,12 @@ def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
     token = db.session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
 
     return token is not None
+
+# Register blueprints for routes
+# important do not move this to the top of the file
+# otherwise the config will not be loaded properly
+from routes.institution import institution_bp
+from routes.user import user_bp
+
+app.register_blueprint(user_bp)
+app.register_blueprint(institution_bp)

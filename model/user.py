@@ -9,7 +9,8 @@ from database import db
 
 
 class User(db.Model):
-    table_name = "user"
+    __table_name__ = "user"
+
     id: Mapped[str] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
