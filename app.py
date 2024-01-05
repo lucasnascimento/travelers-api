@@ -56,10 +56,12 @@ def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
 from routes.institution import institution_bp
 from routes.user import user_bp
 from routes.itinerary import itinerary_bp
+from routes.itineraryentity import itinerary_entity_bp
 
 app.register_blueprint(user_bp)
 app.register_blueprint(institution_bp)
 app.register_blueprint(itinerary_bp)
+app.register_blueprint(itinerary_entity_bp)
 
 with app.app_context():
     db.create_all()
