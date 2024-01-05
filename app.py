@@ -58,6 +58,7 @@ from routes.user import user_bp
 from routes.itinerary import itinerary_bp
 from routes.itineraryentry import itinerary_entry_bp
 from routes.itineraryrule import itinerary_rule_bp
+from routes.itineraryphoto import itinerary_photo_bp
 
 
 app.register_blueprint(user_bp)
@@ -65,6 +66,7 @@ app.register_blueprint(institution_bp)
 app.register_blueprint(itinerary_bp)
 app.register_blueprint(itinerary_entry_bp)
 app.register_blueprint(itinerary_rule_bp)
+app.register_blueprint(itinerary_photo_bp)
 
 with app.app_context():
     db.create_all()
