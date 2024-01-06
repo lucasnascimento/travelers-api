@@ -53,13 +53,13 @@ def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
 # Register blueprints for routes
 # important do not move this to the top of the file
 # otherwise the config will not be loaded properly
-from routes.institution import institution_bp
-from routes.user import user_bp
-from routes.itinerary import itinerary_bp
-from routes.itineraryentry import itinerary_entry_bp
-from routes.itineraryrule import itinerary_rule_bp
-from routes.itineraryphoto import itinerary_photo_bp
-from routes.itinerarydocument import itinerary_document_bp
+from routes.admin.institution import institution_bp
+from routes.admin.user import user_bp
+from routes.admin.itinerary import itinerary_bp
+from routes.admin.itineraryentry import itinerary_entry_bp
+from routes.admin.itineraryrule import itinerary_rule_bp
+from routes.admin.itineraryphoto import itinerary_photo_bp
+from routes.admin.itinerarydocument import itinerary_document_bp
 
 
 app.register_blueprint(user_bp, url_prefix='/api/admin')
