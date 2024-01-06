@@ -6,6 +6,7 @@ from model.itineraryentry import Entry
 from model.itineraryrule import Rule
 from model.itineraryphoto import Photo
 from model.itinerarydocument import Document
+from routes.responses import create_response, create_error_response
 
 catalog_bp = Blueprint("catalog", __name__)
 
@@ -14,7 +15,7 @@ catalog_bp = Blueprint("catalog", __name__)
 def list_institutions():
     institutions = Institution.query.filter_by(is_deleted=False).all()
     data = [institution.to_dict() for institution in institutions]
-    return jsonify({"data": data})
+    return create_response(data)
 
 
 @catalog_bp.route("/institutions/<institution_id>", methods=["GET"])
@@ -23,7 +24,7 @@ def get_institution(institution_id):
         id=institution_id, is_deleted=False
     ).first()
     if institution is None:
-        return jsonify(error="not_found"), 404
+        return create_error_response("not_found", 404)
 
     itineraries = Itinerary.query.filter_by(
         institution_id=institution_id, is_deleted=False
@@ -43,7 +44,7 @@ def get_institution(institution_id):
         for itinerary in itineraries
     ]
 
-    return jsonify({"data": data})
+    return create_response(data)
 
 
 @catalog_bp.route("/institutions/<institution_id>/itineraries", methods=["GET"])
@@ -116,4 +117,4 @@ def get_itinerary(itinerary_id):
     ]
     data["documents"] = documents_data
 
-    return jsonify({"data": data})
+    return create_response(data)

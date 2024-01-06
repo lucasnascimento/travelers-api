@@ -11,6 +11,7 @@ from database import db
 from model.file import File
 from model.itinerary import Itinerary
 from model.itineraryphoto import Photo
+from routes.responses import create_error_response, create_response
 
 itinerary_photo_bp = Blueprint("itinerary_photo", __name__)
 
@@ -24,7 +25,8 @@ def create_photo(itinerary_id):
     new_itineraryphoto = Photo(**data)
     db.session.add(new_itineraryphoto)
     db.session.commit()
-    return jsonify(new_itineraryphoto.to_dict()), 201
+    data = new_itineraryphoto.to_dict()
+    return create_response(data)
 
 
 @itinerary_photo_bp.route("/itinerary/<itinerary_id>/photo", methods=["GET"])
@@ -32,7 +34,8 @@ def create_photo(itinerary_id):
 def get_all_entries(itinerary_id):
     Itinerary.query.get_or_404(itinerary_id)
     entries = Photo.query.filter_by(itinerary_id=itinerary_id, is_deleted=False).all()
-    return jsonify([photo.to_dict() for photo in entries])
+    data = [entry.to_dict() for entry in entries]
+    return create_response(data)
 
 
 @itinerary_photo_bp.route("/itinerary/<itinerary_id>/photo/<photo_id>", methods=["GET"])
@@ -43,8 +46,9 @@ def get_itinerary(itinerary_id, photo_id):
         itinerary_id=itinerary_id, id=photo_id, is_deleted=False
     ).first()
     if photo is None:
-        return jsonify(error="not_found"), 404
-    return jsonify(photo.to_dict())
+        return create_error_response("not_found", 404)
+    data = photo.to_dict()
+    return create_response(data)
 
 
 @itinerary_photo_bp.route("/itinerary/<itinerary_id>/photo/<photo_id>", methods=["PUT"])
@@ -54,7 +58,7 @@ def update_itinerary(itinerary_id, photo_id):
     data = request.get_json()
     Photo.query.filter_by(itinerary_id=itinerary_id, id=photo_id).update(data)
     db.session.commit()
-    return jsonify(success=True)
+    return create_response({"success": True})
 
 
 @itinerary_photo_bp.route(
@@ -68,7 +72,7 @@ def delete_itinerary(itinerary_id, photo_id):
         return jsonify(error="not_found"), 404
     photo.is_deleted = True
     db.session.commit()
-    return jsonify(success=True)
+    return create_response({"success": True})
 
 
 @itinerary_photo_bp.route(
@@ -110,4 +114,4 @@ def upload_file(itinerary_id, photo_id):
         )
         db.session.commit()
 
-    return jsonify(success=True)
+    return create_response({"success": True})

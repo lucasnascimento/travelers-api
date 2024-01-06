@@ -6,6 +6,7 @@ from database import db
 from model.file import File
 from model.itinerary import Itinerary
 from model.itineraryentry import Entry
+from routes.responses import create_error_response, create_response
 
 itinerary_entry_bp = Blueprint("itinerary_entry", __name__)
 
@@ -19,7 +20,8 @@ def create_entry(itinerary_id):
     new_itineraryentry = Entry(**data)
     db.session.add(new_itineraryentry)
     db.session.commit()
-    return jsonify(new_itineraryentry.to_dict()), 201
+    data = new_itineraryentry.to_dict()
+    return create_response(data)
 
 
 @itinerary_entry_bp.route("/itinerary/<itinerary_id>/entry", methods=["GET"])
@@ -27,7 +29,8 @@ def create_entry(itinerary_id):
 def get_all_entries(itinerary_id):
     Itinerary.query.get_or_404(itinerary_id)
     entries = Entry.query.filter_by(itinerary_id=itinerary_id, is_deleted=False).all()
-    return jsonify([entry.to_dict() for entry in entries])
+    data = [entry.to_dict() for entry in entries]
+    return create_response(data)
 
 
 @itinerary_entry_bp.route("/itinerary/<itinerary_id>/entry/<entry_id>", methods=["GET"])
@@ -38,8 +41,9 @@ def get_itinerary(itinerary_id, entry_id):
         itinerary_id=itinerary_id, id=entry_id, is_deleted=False
     ).first()
     if entry is None:
-        return jsonify(error="not_found"), 404
-    return jsonify(entry.to_dict())
+        return create_error_response("not_found", 404)
+    data = entry.to_dict()
+    return create_response(data)
 
 
 @itinerary_entry_bp.route("/itinerary/<itinerary_id>/entry/<entry_id>", methods=["PUT"])
@@ -49,7 +53,7 @@ def update_itinerary(itinerary_id, entry_id):
     data = request.get_json()
     Entry.query.filter_by(itinerary_id=itinerary_id, id=entry_id).update(data)
     db.session.commit()
-    return jsonify(success=True)
+    return create_response({"success": True})
 
 
 @itinerary_entry_bp.route(
@@ -63,4 +67,4 @@ def delete_itinerary(itinerary_id, entry_id):
         return jsonify(error="not_found"), 404
     entry.is_deleted = True
     db.session.commit()
-    return jsonify(success=True)
+    return create_response({"success": True})

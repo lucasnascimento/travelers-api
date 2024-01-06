@@ -2,7 +2,7 @@ import mimetypes
 import os
 import uuid
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, make_response
 from flask_jwt_extended import jwt_required
 from werkzeug.utils import secure_filename
 
@@ -10,6 +10,8 @@ from config import UPLOAD_FOLDER
 from database import db
 from model.file import File
 from model.institution import Institution
+
+from routes.responses import create_response, create_error_response
 
 institution_bp = Blueprint("institution", __name__)
 
@@ -21,14 +23,16 @@ def create_institution():
     new_institution = Institution(**data)
     db.session.add(new_institution)
     db.session.commit()
-    return jsonify(new_institution.to_dict()), 201
+    data = new_institution.to_dict()
+    return create_response(data)
 
 
 @institution_bp.route("/institution", methods=["GET"])
 @jwt_required()
 def get_all_institutions():
     institutions = Institution.query.filter_by(is_deleted=False).all()
-    return jsonify([institution.to_dict() for institution in institutions])
+    data = [institution.to_dict() for institution in institutions]
+    return create_response(data)
 
 
 @institution_bp.route("/institution/<institution_id>", methods=["GET"])
@@ -38,8 +42,9 @@ def get_institution(institution_id):
         id=institution_id, is_deleted=False
     ).first()
     if institution is None:
-        return jsonify(error="not_found"), 404
-    return jsonify(institution.to_dict())
+        return create_error_response("not_found", 404)
+    data = institution.to_dict()
+    return create_response(data)
 
 
 @institution_bp.route("/institution/<institution_id>", methods=["PUT"])
@@ -48,7 +53,7 @@ def update_institution(institution_id):
     data = request.get_json()
     Institution.query.filter_by(id=institution_id).update(data)
     db.session.commit()
-    return jsonify(success=True)
+    return create_response({"success": True})
 
 
 @institution_bp.route("/institution/<institution_id>", methods=["DELETE"])
@@ -59,7 +64,7 @@ def delete_institution(institution_id):
         return jsonify(error="not_found"), 404
     institution.is_deleted = True
     db.session.commit()
-    return jsonify(success=True)
+    return create_response({"success": True})
 
 
 @institution_bp.route("/institution/<institution_id>/upload_logo", methods=["POST"])
@@ -99,4 +104,4 @@ def upload_logo(institution_id):
         )
         db.session.commit()
 
-    return jsonify(success=True)
+    return create_response({"success": True})

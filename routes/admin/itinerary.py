@@ -11,6 +11,8 @@ from database import db
 from model.file import File
 from model.itinerary import Itinerary
 
+from routes.responses import create_response, create_error_response
+
 itinerary_bp = Blueprint("itinerary", __name__)
 
 
@@ -21,14 +23,16 @@ def create_itinerary():
     new_itinerary = Itinerary(**data)
     db.session.add(new_itinerary)
     db.session.commit()
-    return jsonify(new_itinerary.to_dict()), 201
+    data = new_itinerary.to_dict()
+    return create_response(data)
 
 
 @itinerary_bp.route("/itinerary", methods=["GET"])
 @jwt_required()
 def get_all_itineraries():
     itineraries = Itinerary.query.filter_by(is_deleted=False).all()
-    return jsonify([itinerary.to_dict() for itinerary in itineraries])
+    data = [itinerary.to_dict() for itinerary in itineraries]
+    return create_response(data)
 
 
 @itinerary_bp.route("/itinerary/<itinerary_id>", methods=["GET"])
@@ -36,8 +40,9 @@ def get_all_itineraries():
 def get_itinerary(itinerary_id):
     itinerary = Itinerary.query.filter_by(id=itinerary_id, is_deleted=False).first()
     if itinerary is None:
-        return jsonify(error="not_found"), 404
-    return jsonify(itinerary.to_dict())
+        return create_error_response("not_found", 404)
+    data=itinerary.to_dict()
+    return create_error_response(data)
 
 
 @itinerary_bp.route("/itinerary/<itinerary_id>", methods=["PUT"])
@@ -46,7 +51,7 @@ def update_itinerary(itinerary_id):
     data = request.get_json()
     Itinerary.query.filter_by(id=itinerary_id).update(data)
     db.session.commit()
-    return jsonify(success=True)
+    return create_response({"success": True})
 
 
 @itinerary_bp.route("/itinerary/<itinerary_id>", methods=["DELETE"])
@@ -57,7 +62,7 @@ def delete_itinerary(itinerary_id):
         return jsonify(error="not_found"), 404
     itinerary.is_deleted = True
     db.session.commit()
-    return jsonify(success=True)
+    return create_response({"success": True})
 
 
 @itinerary_bp.route("/itinerary/<itinerary_id>/upload_cover", methods=["POST"])
@@ -97,4 +102,4 @@ def upload_cover(itinerary_id):
         )
         db.session.commit()
 
-    return jsonify(success=True)
+    return create_response({"success": True})

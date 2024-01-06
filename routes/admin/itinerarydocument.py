@@ -11,6 +11,7 @@ from database import db
 from model.file import File
 from model.itinerary import Itinerary
 from model.itinerarydocument import Document
+from routes.responses import create_error_response, create_response
 
 itinerary_document_bp = Blueprint("itinerary_document", __name__)
 
@@ -24,7 +25,8 @@ def create_document(itinerary_id):
     new_itinerarydocument = Document(**data)
     db.session.add(new_itinerarydocument)
     db.session.commit()
-    return jsonify(new_itinerarydocument.to_dict()), 201
+    data = new_itinerarydocument.to_dict()
+    return create_response(data)
 
 
 @itinerary_document_bp.route("/itinerary/<itinerary_id>/document", methods=["GET"])
@@ -34,7 +36,8 @@ def get_all_entries(itinerary_id):
     entries = Document.query.filter_by(
         itinerary_id=itinerary_id, is_deleted=False
     ).all()
-    return jsonify([document.to_dict() for document in entries])
+    data=[entry.to_dict() for entry in entries]
+    return create_response(data)
 
 
 @itinerary_document_bp.route(
@@ -47,8 +50,9 @@ def get_itinerary(itinerary_id, document_id):
         itinerary_id=itinerary_id, id=document_id, is_deleted=False
     ).first()
     if document is None:
-        return jsonify(error="not_found"), 404
-    return jsonify(document.to_dict())
+        return create_error_response("not_found", 404)
+    data=document.to_dict()
+    return create_response(data)
 
 
 @itinerary_document_bp.route(
@@ -60,7 +64,7 @@ def update_itinerary(itinerary_id, document_id):
     data = request.get_json()
     Document.query.filter_by(itinerary_id=itinerary_id, id=document_id).update(data)
     db.session.commit()
-    return jsonify(success=True)
+    return create_response({"success": True})
 
 
 @itinerary_document_bp.route(
@@ -74,7 +78,7 @@ def delete_itinerary(itinerary_id, document_id):
         return jsonify(error="not_found"), 404
     document.is_deleted = True
     db.session.commit()
-    return jsonify(success=True)
+    return create_response({"success": True})
 
 
 @itinerary_document_bp.route(
@@ -116,4 +120,4 @@ def upload_file(itinerary_id, document_id):
         )
         db.session.commit()
 
-    return jsonify(success=True)
+    return create_response({"success": True})
