@@ -62,13 +62,13 @@ from routes.itineraryphoto import itinerary_photo_bp
 from routes.itinerarydocument import itinerary_document_bp
 
 
-app.register_blueprint(user_bp)
-app.register_blueprint(institution_bp)
-app.register_blueprint(itinerary_bp)
-app.register_blueprint(itinerary_entry_bp)
-app.register_blueprint(itinerary_rule_bp)
-app.register_blueprint(itinerary_photo_bp)
-app.register_blueprint(itinerary_document_bp)
+app.register_blueprint(user_bp, url_prefix='/api/admin')
+app.register_blueprint(institution_bp, url_prefix='/api/admin')
+app.register_blueprint(itinerary_bp, url_prefix='/api/admin')
+app.register_blueprint(itinerary_entry_bp, url_prefix='/api/admin')
+app.register_blueprint(itinerary_rule_bp, url_prefix='/api/admin')
+app.register_blueprint(itinerary_photo_bp, url_prefix='/api/admin')
+app.register_blueprint(itinerary_document_bp, url_prefix='/api/admin')
 
 with app.app_context():
     db.create_all()
