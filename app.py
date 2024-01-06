@@ -60,15 +60,18 @@ from routes.admin.itineraryentry import itinerary_entry_bp
 from routes.admin.itineraryrule import itinerary_rule_bp
 from routes.admin.itineraryphoto import itinerary_photo_bp
 from routes.admin.itinerarydocument import itinerary_document_bp
+from routes.public.catalog import catalog_bp
 
 
-app.register_blueprint(user_bp, url_prefix='/api/admin')
-app.register_blueprint(institution_bp, url_prefix='/api/admin')
-app.register_blueprint(itinerary_bp, url_prefix='/api/admin')
-app.register_blueprint(itinerary_entry_bp, url_prefix='/api/admin')
-app.register_blueprint(itinerary_rule_bp, url_prefix='/api/admin')
-app.register_blueprint(itinerary_photo_bp, url_prefix='/api/admin')
-app.register_blueprint(itinerary_document_bp, url_prefix='/api/admin')
+app.register_blueprint(user_bp, url_prefix="/api/admin")
+app.register_blueprint(institution_bp, url_prefix="/api/admin")
+app.register_blueprint(itinerary_bp, url_prefix="/api/admin")
+app.register_blueprint(itinerary_entry_bp, url_prefix="/api/admin")
+app.register_blueprint(itinerary_rule_bp, url_prefix="/api/admin")
+app.register_blueprint(itinerary_photo_bp, url_prefix="/api/admin")
+app.register_blueprint(itinerary_document_bp, url_prefix="/api/admin")
+app.register_blueprint(catalog_bp, url_prefix="/api/public")
+
 
 with app.app_context():
     db.create_all()
