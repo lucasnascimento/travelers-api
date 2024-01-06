@@ -3,6 +3,7 @@ import os
 import uuid
 
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required
 from werkzeug.utils import secure_filename
 
 from config import UPLOAD_FOLDER
@@ -15,6 +16,7 @@ itinerary_photo_bp = Blueprint("itinerary_photo", __name__)
 
 
 @itinerary_photo_bp.route("/itinerary/<itinerary_id>/photo", methods=["POST"])
+@jwt_required()
 def create_photo(itinerary_id):
     Itinerary.query.get_or_404(itinerary_id)
     data = request.get_json()
@@ -26,6 +28,7 @@ def create_photo(itinerary_id):
 
 
 @itinerary_photo_bp.route("/itinerary/<itinerary_id>/photo", methods=["GET"])
+@jwt_required()
 def get_all_entries(itinerary_id):
     Itinerary.query.get_or_404(itinerary_id)
     entries = Photo.query.filter_by(itinerary_id=itinerary_id, is_deleted=False).all()
@@ -33,6 +36,7 @@ def get_all_entries(itinerary_id):
 
 
 @itinerary_photo_bp.route("/itinerary/<itinerary_id>/photo/<photo_id>", methods=["GET"])
+@jwt_required()
 def get_itinerary(itinerary_id, photo_id):
     Itinerary.query.get_or_404(itinerary_id)
     photo = Photo.query.filter_by(
@@ -44,6 +48,7 @@ def get_itinerary(itinerary_id, photo_id):
 
 
 @itinerary_photo_bp.route("/itinerary/<itinerary_id>/photo/<photo_id>", methods=["PUT"])
+@jwt_required()
 def update_itinerary(itinerary_id, photo_id):
     Itinerary.query.get_or_404(itinerary_id)
     data = request.get_json()
@@ -55,6 +60,7 @@ def update_itinerary(itinerary_id, photo_id):
 @itinerary_photo_bp.route(
     "/itinerary/<itinerary_id>/photo/<photo_id>", methods=["DELETE"]
 )
+@jwt_required()
 def delete_itinerary(itinerary_id, photo_id):
     Itinerary.query.get_or_404(itinerary_id)
     photo = Photo.query.get(photo_id)
@@ -68,6 +74,7 @@ def delete_itinerary(itinerary_id, photo_id):
 @itinerary_photo_bp.route(
     "/itinerary/<itinerary_id>/photo/<photo_id>/upload", methods=["POST"]
 )
+@jwt_required()
 def upload_file(itinerary_id, photo_id):
     # Check if the post request has the file part
     if "file" not in request.files:

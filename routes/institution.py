@@ -1,19 +1,21 @@
+import mimetypes
+import os
+import uuid
+
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required
 from werkzeug.utils import secure_filename
 
+from config import UPLOAD_FOLDER
 from database import db
 from model.file import File
 from model.institution import Institution
-from config import UPLOAD_FOLDER
-import mimetypes
-import uuid
-
-import os
 
 institution_bp = Blueprint("institution", __name__)
 
 
 @institution_bp.route("/institution", methods=["POST"])
+@jwt_required()
 def create_institution():
     data = request.get_json()
     new_institution = Institution(**data)
@@ -23,12 +25,14 @@ def create_institution():
 
 
 @institution_bp.route("/institution", methods=["GET"])
+@jwt_required()
 def get_all_institutions():
     institutions = Institution.query.filter_by(is_deleted=False).all()
     return jsonify([institution.to_dict() for institution in institutions])
 
 
 @institution_bp.route("/institution/<institution_id>", methods=["GET"])
+@jwt_required()
 def get_institution(institution_id):
     institution = Institution.query.filter_by(
         id=institution_id, is_deleted=False
@@ -39,6 +43,7 @@ def get_institution(institution_id):
 
 
 @institution_bp.route("/institution/<institution_id>", methods=["PUT"])
+@jwt_required()
 def update_institution(institution_id):
     data = request.get_json()
     Institution.query.filter_by(id=institution_id).update(data)
@@ -47,6 +52,7 @@ def update_institution(institution_id):
 
 
 @institution_bp.route("/institution/<institution_id>", methods=["DELETE"])
+@jwt_required()
 def delete_institution(institution_id):
     institution = Institution.query.get(institution_id)
     if institution is None:
@@ -57,6 +63,7 @@ def delete_institution(institution_id):
 
 
 @institution_bp.route("/institution/<institution_id>/upload_logo", methods=["POST"])
+@jwt_required()
 def upload_logo(institution_id):
     # Check if the post request has the file part
     if "file" not in request.files:

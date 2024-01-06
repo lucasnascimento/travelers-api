@@ -1,19 +1,21 @@
+import mimetypes
+import os
+import uuid
+
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required
 from werkzeug.utils import secure_filename
 
+from config import UPLOAD_FOLDER
 from database import db
 from model.file import File
 from model.itinerary import Itinerary
-from config import UPLOAD_FOLDER
-import mimetypes
-import uuid
-
-import os
 
 itinerary_bp = Blueprint("itinerary", __name__)
 
 
 @itinerary_bp.route("/itinerary", methods=["POST"])
+@jwt_required()
 def create_itinerary():
     data = request.get_json()
     new_itinerary = Itinerary(**data)
@@ -23,12 +25,14 @@ def create_itinerary():
 
 
 @itinerary_bp.route("/itinerary", methods=["GET"])
+@jwt_required()
 def get_all_itineraries():
     itineraries = Itinerary.query.filter_by(is_deleted=False).all()
     return jsonify([itinerary.to_dict() for itinerary in itineraries])
 
 
 @itinerary_bp.route("/itinerary/<itinerary_id>", methods=["GET"])
+@jwt_required()
 def get_itinerary(itinerary_id):
     itinerary = Itinerary.query.filter_by(id=itinerary_id, is_deleted=False).first()
     if itinerary is None:
@@ -37,6 +41,7 @@ def get_itinerary(itinerary_id):
 
 
 @itinerary_bp.route("/itinerary/<itinerary_id>", methods=["PUT"])
+@jwt_required()
 def update_itinerary(itinerary_id):
     data = request.get_json()
     Itinerary.query.filter_by(id=itinerary_id).update(data)
@@ -45,6 +50,7 @@ def update_itinerary(itinerary_id):
 
 
 @itinerary_bp.route("/itinerary/<itinerary_id>", methods=["DELETE"])
+@jwt_required()
 def delete_itinerary(itinerary_id):
     itinerary = Itinerary.query.get(itinerary_id)
     if itinerary is None:
@@ -55,6 +61,7 @@ def delete_itinerary(itinerary_id):
 
 
 @itinerary_bp.route("/itinerary/<itinerary_id>/upload_cover", methods=["POST"])
+@jwt_required()
 def upload_cover(itinerary_id):
     # Check if the post request has the file part
     if "file" not in request.files:

@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import jwt_required
 from werkzeug.utils import secure_filename
 
 from database import db
@@ -10,6 +11,7 @@ itinerary_entry_bp = Blueprint("itinerary_entry", __name__)
 
 
 @itinerary_entry_bp.route("/itinerary/<itinerary_id>/entry", methods=["POST"])
+@jwt_required()
 def create_entry(itinerary_id):
     Itinerary.query.get_or_404(itinerary_id)
     data = request.get_json()
@@ -21,15 +23,15 @@ def create_entry(itinerary_id):
 
 
 @itinerary_entry_bp.route("/itinerary/<itinerary_id>/entry", methods=["GET"])
+@jwt_required()
 def get_all_entries(itinerary_id):
     Itinerary.query.get_or_404(itinerary_id)
     entries = Entry.query.filter_by(itinerary_id=itinerary_id, is_deleted=False).all()
     return jsonify([entry.to_dict() for entry in entries])
 
 
-@itinerary_entry_bp.route(
-    "/itinerary/<itinerary_id>/entry/<entry_id>", methods=["GET"]
-)
+@itinerary_entry_bp.route("/itinerary/<itinerary_id>/entry/<entry_id>", methods=["GET"])
+@jwt_required()
 def get_itinerary(itinerary_id, entry_id):
     Itinerary.query.get_or_404(itinerary_id)
     entry = Entry.query.filter_by(
@@ -40,9 +42,8 @@ def get_itinerary(itinerary_id, entry_id):
     return jsonify(entry.to_dict())
 
 
-@itinerary_entry_bp.route(
-    "/itinerary/<itinerary_id>/entry/<entry_id>", methods=["PUT"]
-)
+@itinerary_entry_bp.route("/itinerary/<itinerary_id>/entry/<entry_id>", methods=["PUT"])
+@jwt_required()
 def update_itinerary(itinerary_id, entry_id):
     Itinerary.query.get_or_404(itinerary_id)
     data = request.get_json()
@@ -54,6 +55,7 @@ def update_itinerary(itinerary_id, entry_id):
 @itinerary_entry_bp.route(
     "/itinerary/<itinerary_id>/entry/<entry_id>", methods=["DELETE"]
 )
+@jwt_required()
 def delete_itinerary(itinerary_id, entry_id):
     Itinerary.query.get_or_404(itinerary_id)
     entry = Entry.query.get(entry_id)
