@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from flask import Flask
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 
 import config
 from config import APP_SECRET_KEY, JWT_SECRET_KEY, SQLALCHEMY_DATABASE_URI
@@ -12,6 +13,8 @@ from model.user import User
 
 app = Flask(__name__)
 config.init_app(app)
+
+CORS(app, origins=["http://localhost:3000", "http://another.example.com"])
 
 # Set the secret key to some random bytes. Keep this really secret!
 app.secret_key = APP_SECRET_KEY
