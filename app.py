@@ -1,15 +1,15 @@
 from datetime import timedelta
 
 from flask import Flask
-from flask_jwt_extended import JWTManager
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate, upgrade
 
 import config
 from config import APP_SECRET_KEY, JWT_SECRET_KEY, SQLALCHEMY_DATABASE_URI
 from database import db
 from model.token import TokenBlocklist
 from model.user import User
-
 
 app = Flask(__name__)
 config.init_app(app)
@@ -20,6 +20,7 @@ CORS(app, origins=["http://localhost:3000", "http://another.example.com"])
 app.secret_key = APP_SECRET_KEY
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 db.init_app(app)
+migrate = Migrate(app, db)
 
 ACCESS_EXPIRES = timedelta(hours=1)
 app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
@@ -57,14 +58,13 @@ def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
 # important do not move this to the top of the file
 # otherwise the config will not be loaded properly
 from routes.admin.institution import institution_bp
-from routes.admin.user import user_bp
 from routes.admin.itinerary import itinerary_bp
-from routes.admin.itineraryentry import itinerary_entry_bp
-from routes.admin.itineraryrule import itinerary_rule_bp
-from routes.admin.itineraryphoto import itinerary_photo_bp
 from routes.admin.itinerarydocument import itinerary_document_bp
+from routes.admin.itineraryentry import itinerary_entry_bp
+from routes.admin.itineraryphoto import itinerary_photo_bp
+from routes.admin.itineraryrule import itinerary_rule_bp
+from routes.admin.user import user_bp
 from routes.public.catalog import catalog_bp
-
 
 app.register_blueprint(user_bp, url_prefix="/api/admin")
 app.register_blueprint(institution_bp, url_prefix="/api/admin")
@@ -77,13 +77,13 @@ app.register_blueprint(catalog_bp, url_prefix="/api/public")
 
 
 with app.app_context():
-    db.create_all()
+    upgrade()
 
-    if not db.session.query(
-        User.query.filter_by(email="email@email.com").exists()
-    ).scalar():
-        db.session.add(User(email="email@email.com", password="MyPassword"))
+    user = User.query.filter_by(email="admin@localhost").first()
+    if not user:
+        user = User(email="admin@localhost", password="admin@2024")
+        db.session.add(user)
         db.session.commit()
 
-    users = db.session.execute(db.select(User)).scalars()
-    app.logger.info(users)
+    user_count = User.query.count()
+    app.logger.info(f"user_count={user_count}")
