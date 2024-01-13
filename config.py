@@ -1,8 +1,8 @@
 import os
 
-SQLALCHEMY_DATABASE_URI = "postgresql://postgres:postgres@localhost/travelers-api-dev"
-JWT_SECRET_KEY = "0de13e756093703f9fdf1c0f45a6fc91206dc732dc12016b791838fe30664f3a"
-APP_SECRET_KEY = "5c4990efccb1b1f609fda5eb7d92e8741e9779f9be5b7b99207c2f89e7abbc2a"
+SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI")
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+APP_SECRET_KEY = os.getenv("APP_SECRET_KEY")
 UPLOAD_FOLDER = None
 
 
