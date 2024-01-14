@@ -34,7 +34,7 @@ plugins:
 
 package:
   patterns:
-    - '!node_modules/**'
+    - "!node_modules/**"
 
 custom:
   wsgi:
@@ -54,9 +54,9 @@ custom:
     strip: false
     slimPatternsAppendDefaults: false
     slimPatterns:
-      - '**/*.py[c|o]'
-      - '**/__pycache__*'
-      - '**/*.egg-info*'
+      - "**/*.py[c|o]"
+      - "**/__pycache__*"
+      - "**/*.egg-info*"
     noDeploy:
       - pytest
       - boto3
@@ -132,6 +132,13 @@ resources:
               Fn::GetAtt:
                 - TravelerSecurityGroup
                 - GroupId
+          - IpProtocol: tcp
+            FromPort: 5432
+            ToPort: 5432
+            SourceSecurityGroupId:
+              Fn::GetAtt:
+                - BastionSecurityGroup
+                - GroupId
     TravelerDB:
       Type: "AWS::RDS::DBInstance"
       Properties:
@@ -153,6 +160,72 @@ resources:
       Type: "AWS::S3::Bucket"
       Properties:
         BucketName: ${env:UPLOAD_BUCKET_NAME}
+
+    PublicSubnet:
+      Type: "AWS::EC2::Subnet"
+      Properties:
+        VpcId:
+          Ref: TravelerVPC
+        CidrBlock: 10.0.4.0/24
+        MapPublicIpOnLaunch: true
+    InternetGateway:
+      Type: "AWS::EC2::InternetGateway"
+    AttachGateway:
+      Type: "AWS::EC2::VPCGatewayAttachment"
+      Properties:
+        VpcId:
+          Ref: TravelerVPC
+        InternetGatewayId:
+          Ref: InternetGateway
+    PublicRouteTable:
+      Type: "AWS::EC2::RouteTable"
+      Properties:
+        VpcId:
+          Ref: TravelerVPC
+    PublicRoute:
+      Type: "AWS::EC2::Route"
+      DependsOn: AttachGateway
+      Properties:
+        RouteTableId:
+          Ref: PublicRouteTable
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId:
+          Ref: InternetGateway
+    SubnetRouteTableAssociation:
+      Type: "AWS::EC2::SubnetRouteTableAssociation"
+      Properties:
+        SubnetId:
+          Ref: PublicSubnet
+        RouteTableId:
+          Ref: PublicRouteTable
+
+    BastionSecurityGroup:
+      Type: "AWS::EC2::SecurityGroup"
+      Properties:
+        GroupDescription: Security Group for bastion host
+        VpcId:
+          Ref: TravelerVPC
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 22
+            ToPort: 22
+            CidrIp: 177.200.70.41/0 # et minha casa!
+
+    BastionHost:
+      Type: "AWS::EC2::Instance"
+      Properties:
+        ImageId: ami-037cb310a4cd89c1c
+        InstanceType: t2.micro
+        KeyName: bastion-rsa
+        AvailabilityZone: "sa-east-1a"
+        NetworkInterfaces:
+          - AssociatePublicIpAddress: true
+            DeviceIndex: "0"
+            GroupSet:
+              - Ref: BastionSecurityGroup
+            SubnetId:
+              Ref: PublicSubnet
+
   Outputs:
     TravelerDBURL:
       Description: The URL of the database
