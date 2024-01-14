@@ -2,3 +2,7 @@ __pycache__
 .venv
 static/uploads
 .envrc
+node_modules
+.serverless
+.requirements.zip
+

@@ -19,6 +19,7 @@ CORS(app, origins=["http://localhost:3000", "http://another.example.com"])
 # Set the secret key to some random bytes. Keep this really secret!
 app.secret_key = APP_SECRET_KEY
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"connect_args": {"connect_timeout": 1}}
 db.init_app(app)
 migrate = Migrate(app, db)
 

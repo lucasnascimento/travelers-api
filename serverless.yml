@@ -1,0 +1,164 @@
+service: travelers-app
+
+provider:
+  name: aws
+  runtime: python3.9
+  stage: prod
+  region: sa-east-1
+  vpc:
+    securityGroupIds:
+      - Fn::GetAtt:
+          - TravelerSecurityGroup
+          - GroupId
+    subnetIds:
+      - Ref: TravelerSubnet1
+      - Ref: TravelerSubnet2
+  environment:
+    SQLALCHEMY_DATABASE_URI:
+      Fn::Join:
+        - ""
+        - - "postgresql://"
+          - ${env:DB_USER}
+          - ":"
+          - ${env:DB_PASSWORD}
+          - "@"
+          - Fn::ImportValue: TravelerDBURL
+          - ":5432/"
+          - ${env:DB_NAME}
+    JWT_SECRET_KEY: ${env:JWT_SECRET_KEY}
+    APP_SECRET_KEY: ${env:APP_SECRET_KEY}
+
+plugins:
+  - serverless-wsgi
+  - serverless-python-requirements
+
+package:
+  patterns:
+    - '!node_modules/**'
+
+custom:
+  wsgi:
+    app: app.app
+    packRequirements: false
+  pythonRequirements:
+    pipCmdExtraArgs:
+      - "--platform manylinux2014_x86_64"
+      - "--only-binary=:all:"
+    dockerizePip: non-linux
+    zip: true
+    useDownloadCache: true
+    useStaticCache: true
+    staticCacheMaxVersions: 10
+    slim: true
+    # layer: true
+    strip: false
+    slimPatternsAppendDefaults: false
+    slimPatterns:
+      - '**/*.py[c|o]'
+      - '**/__pycache__*'
+      - '**/*.egg-info*'
+    noDeploy:
+      - pytest
+      - boto3
+      - botocore
+      - docutils
+      - jmespath
+      - pip
+      - python-dateutil
+      - s3transfer
+      - setuptools
+      - six
+
+functions:
+  app:
+    handler: wsgi_handler.handler
+    events:
+      - http: ANY /
+      - http: "ANY /{proxy+}"
+
+resources:
+  Resources:
+    TravelerVPC:
+      Type: "AWS::EC2::VPC"
+      Properties:
+        CidrBlock: "10.0.0.0/16"
+        EnableDnsSupport: true
+        EnableDnsHostnames: true
+    TravelerSubnet1:
+      Type: "AWS::EC2::Subnet"
+      Properties:
+        VpcId:
+          Ref: TravelerVPC
+        CidrBlock: "10.0.2.0/24"
+        AvailabilityZone: "sa-east-1a"
+    TravelerSubnet2:
+      Type: "AWS::EC2::Subnet"
+      Properties:
+        VpcId:
+          Ref: TravelerVPC
+        CidrBlock: "10.0.3.0/24"
+        AvailabilityZone: "sa-east-1b"
+    TravelerSecurityGroup:
+      Type: "AWS::EC2::SecurityGroup"
+      Properties:
+        GroupDescription: Security Group for my VPC
+        VpcId:
+          Ref: TravelerVPC
+    TravelerDBSubnetGroupName:
+      Type: "AWS::RDS::DBSubnetGroup"
+      Properties:
+        DBSubnetGroupDescription: "Subnet group for my RDS"
+        SubnetIds:
+          - Ref: TravelerSubnet1
+          - Ref: TravelerSubnet2
+    TravelerDBParameterGroup:
+      Type: "AWS::RDS::DBParameterGroup"
+      Properties:
+        Description: Parameter group for my PostgreSQL DB
+        Family: postgres15
+        Parameters:
+          max_connections: "100"
+    TravelerDBSecurityGroup:
+      Type: "AWS::EC2::SecurityGroup"
+      Properties:
+        GroupDescription: Security Group for my RDS
+        VpcId:
+          Ref: TravelerVPC
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 5432
+            ToPort: 5432
+            SourceSecurityGroupId:
+              Fn::GetAtt:
+                - TravelerSecurityGroup
+                - GroupId
+    TravelerDB:
+      Type: "AWS::RDS::DBInstance"
+      Properties:
+        AllocatedStorage: "20"
+        DBInstanceClass: "db.t3.micro"
+        Engine: "postgres"
+        EngineVersion: "15.4"
+        MasterUsername: ${env:DB_USER}
+        MasterUserPassword: ${env:DB_PASSWORD}
+        DBName: ${env:DB_NAME}
+        BackupRetentionPeriod: 7
+        DBParameterGroupName:
+          Ref: TravelerDBParameterGroup
+        DBSubnetGroupName:
+          Ref: TravelerDBSubnetGroupName
+        VPCSecurityGroups:
+          - Ref: TravelerDBSecurityGroup
+    TravelerBucket:
+      Type: "AWS::S3::Bucket"
+      Properties:
+        BucketName: ${env:UPLOAD_BUCKET_NAME}
+  Outputs:
+    TravelerDBURL:
+      Description: The URL of the database
+      Value:
+        Fn::GetAtt:
+          - TravelerDB
+          - Endpoint.Address
+      Export:
+        Name: TravelerDBURL
