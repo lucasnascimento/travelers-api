@@ -1,0 +1,1686 @@
+{
+	"info": {
+		"_postman_id": "5cad1ee2-153b-45cb-886d-8301ec283550",
+		"name": "Travelers - API",
+		"description": "Descrição da Sua Coleção",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "129770",
+		"_collection_link": "https://rainsupport.postman.co/workspace/Travelers~1532ee15-97e7-4695-a40f-52ec5c057ed8/collection/129770-5cad1ee2-153b-45cb-886d-8301ec283550?action=share&source=collection_link&creator=129770"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Institution",
+					"item": [
+						{
+							"name": "Create Institution",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"PueriDomus Betel\",\n    \"document\": \"00.000.000/0001-91\",\n    \"has_banking_account\": true,\n    \"banking_account\": {\n        \"bank_code\": \"341\",\n        \"bank_agency\": \"0001\",\n        \"account_number\": \"1234-5\"\n    },\n    \"password\": \"password muito simples\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/institution",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"institution"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List Institutions",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/institution",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"institution"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Institution",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/institution/:institution-id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"institution",
+										":institution-id"
+									],
+									"variable": [
+										{
+											"key": "institution-id",
+											"value": "ef6ef264-6c96-4362-a0e3-4be545e18dff"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Institution",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"is_deleted\": false\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/institution/:institution-id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"institution",
+										":institution-id"
+									],
+									"variable": [
+										{
+											"key": "institution-id",
+											"value": "ef6ef264-6c96-4362-a0e3-4be545e18dff"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Institution",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/institution/:institution-id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"institution",
+										":institution-id"
+									],
+									"variable": [
+										{
+											"key": "institution-id",
+											"value": "ef6ef264-6c96-4362-a0e3-4be545e18dff"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Upload logo",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/home/nascimento/Downloads/image (2).jpeg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/institution/:institution-id/upload_logo",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"institution",
+										":institution-id",
+										"upload_logo"
+									],
+									"variable": [
+										{
+											"key": "institution-id",
+											"value": "ef6ef264-6c96-4362-a0e3-4be545e18dff"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Itinerary",
+					"item": [
+						{
+							"name": "Rule",
+							"item": [
+								{
+									"name": "Create Rule",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"position\": 1,\n    \"purchase_deadline\": \"2024-02-10\",\n    \"installments\": 3\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/rule",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"rule"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "90f473da-d00f-4243-b019-a7dcd94154e6"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "List Rule",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/rule",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"rule"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get Rule",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/rule/:rule_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"rule",
+												":rule_id"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												},
+												{
+													"key": "rule_id",
+													"value": "046e5358-3373-4d3c-8527-6525d7ae495a"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update Rule",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"position\": 0,\n    \"purchase_deadline\": \"2024-01-10\",\n    \"installments\": 11,\n    \"is_deleted\": false\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/rule/:rule_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"rule",
+												":rule_id"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												},
+												{
+													"key": "rule_id",
+													"value": "046e5358-3373-4d3c-8527-6525d7ae495a"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Rule",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/rule/:rule_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"rule",
+												":rule_id"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												},
+												{
+													"key": "rule_id",
+													"value": "046e5358-3373-4d3c-8527-6525d7ae495a"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Photo",
+							"item": [
+								{
+									"name": "Create Photo",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"position\": 2,\n    \"title\": \"imagem 03\",\n    \"description\": \"description iamgem 03\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/photo",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"photo"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "90f473da-d00f-4243-b019-a7dcd94154e6"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "List Photos",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/photo",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"photo"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get Photo",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/photo/:photo_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"photo",
+												":photo_id"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												},
+												{
+													"key": "photo_id",
+													"value": "59078802-7603-4a8f-b88c-b51f4d07cbb9"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update Photo",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"is_deleted\": false,\n    \"title\": \"title\",\n    \"description\": \"descriptionnnnnnnnnn\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/photo/:photo_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"photo",
+												":photo_id"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												},
+												{
+													"key": "photo_id",
+													"value": "59078802-7603-4a8f-b88c-b51f4d07cbb9"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Photo",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/photo/:photo_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"photo",
+												":photo_id"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												},
+												{
+													"key": "photo_id",
+													"value": "59078802-7603-4a8f-b88c-b51f4d07cbb9"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Upload",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "file",
+													"type": "file",
+													"src": "/home/nascimento/Downloads/image (2).jpeg"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/photo/:photo_id/upload",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"photo",
+												":photo_id",
+												"upload"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												},
+												{
+													"key": "photo_id",
+													"value": "59078802-7603-4a8f-b88c-b51f4d07cbb9"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Document",
+							"item": [
+								{
+									"name": "Create Document",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"position\": 3,\n    \"title\": \"title document 03\",\n    \"description\": \"description document 03\",\n    \"link\": \"link document 03\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/document",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"document"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "90f473da-d00f-4243-b019-a7dcd94154e6"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "List Document",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/document",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"document"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get Document",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/document/:document_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"document",
+												":document_id"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												},
+												{
+													"key": "document_id",
+													"value": "82aeca62-db73-4dc5-b189-3d7d10b39257"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update Document",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"is_deleted\": false,\n    \"title\": \"title\",\n    \"description\": \"descriptionnnnnnnnnn\",\n    \"link\": \"link\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/document/:document_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"document",
+												":document_id"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												},
+												{
+													"key": "document_id",
+													"value": "82aeca62-db73-4dc5-b189-3d7d10b39257"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Document",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/document/:document_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"document",
+												":document_id"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												},
+												{
+													"key": "document_id",
+													"value": "82aeca62-db73-4dc5-b189-3d7d10b39257"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Upload",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "file",
+													"type": "file",
+													"src": "/home/nascimento/Downloads/image (2).jpeg"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/document/:document_id/upload",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"document",
+												":document_id",
+												"upload"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												},
+												{
+													"key": "document_id",
+													"value": "82aeca62-db73-4dc5-b189-3d7d10b39257"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Entry",
+							"item": [
+								{
+									"name": "Create Entry",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"position\": 1,\n    \"title\": \"title dia 02\",\n    \"description\": \"description dia 02\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/entry",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"entry"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "90f473da-d00f-4243-b019-a7dcd94154e6"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "List Entries",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/entry",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"entry"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Get Entry",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/entry/:entry_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"entry",
+												":entry_id"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												},
+												{
+													"key": "entry_id",
+													"value": "2e475f8e-8b91-464f-92fa-fe4ed811d33f"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update Entry",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"position\": 0,\n    \"title\": \"title\",\n    \"description\": \"descriptionnnnnnnnnnnnnn\",\n    \"is_deleted\": false\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/entry/:entry_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"entry",
+												":entry_id"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												},
+												{
+													"key": "entry_id",
+													"value": "2e475f8e-8b91-464f-92fa-fe4ed811d33f"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Entry",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{access_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/entry/:entry_id",
+											"host": [
+												"{{base_url}}"
+											],
+											"path": [
+												"api",
+												"admin",
+												"itinerary",
+												":itinerary_id",
+												"entry",
+												":entry_id"
+											],
+											"variable": [
+												{
+													"key": "itinerary_id",
+													"value": "8443571b-1c11-4208-b804-c6965d6072db"
+												},
+												{
+													"key": "entry_id",
+													"value": "2e475f8e-8b91-464f-92fa-fe4ed811d33f"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Create Itinerary",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"institution_id\": \"1bee5aa0-9830-48e5-9977-9547403878d8\",\n    \"status\": \"status\",\n    \"current_step\": \"current_step\",\n    \"title\": \"title\",\n    \"boarding_date\": \"2024-01-20\",\n    \"landing_date\": \"2024-01-31\",\n    \"seats\": 40,\n    \"seat_price\": 1234.56,\n    \"purchase_deadline\": \"2024-01-15\",\n    \"installments\": 6,\n    \"details\": \"details\",\n    \"summary\": \"summary\",\n    \"services\": \"services\",\n    \"terms_and_conditions\": \"terms_and_conditions\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/itinerary",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"itinerary"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List Itineraries",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/itinerary",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"itinerary"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Itinerary",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/itinerary/:itinerary-id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"itinerary",
+										":itinerary-id"
+									],
+									"variable": [
+										{
+											"key": "itinerary-id",
+											"value": "82a2aa07-d14f-4cd7-b80d-adfa7233a49c"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Itinerary",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"is_deleted\": false,\n    \"status\": \"status\",\n    \"current_step\": \"current_step\",\n    \"title\": \"title\",\n    \"boarding_date\": \"2024-01-20\",\n    \"landing_date\": \"2024-01-31\",\n    \"seats\": 40,\n    \"seat_price\": 1234.56,\n    \"purchase_deadline\": \"purchase_deadline\",\n    \"installments\": \"installments\",\n    \"details\": \"details\",\n    \"summary\": \"summary\",\n    \"services\": \"services\",\n    \"terms_and_conditions\": \"terms_and_conditions\",\n    \"institution_id\": \"ef6ef264-6c96-4362-a0e3-4be545e18dff\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/itinerary/:itinerary-id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"itinerary",
+										":itinerary-id"
+									],
+									"variable": [
+										{
+											"key": "itinerary-id",
+											"value": "82a2aa07-d14f-4cd7-b80d-adfa7233a49c"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Itinerary",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/itinerary/:itinerary-id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"itinerary",
+										":itinerary-id"
+									],
+									"variable": [
+										{
+											"key": "itinerary-id",
+											"value": "82a2aa07-d14f-4cd7-b80d-adfa7233a49c"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Upload logo",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/home/nascimento/Downloads/image (2).jpeg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/itinerary/:itinerary-id/upload_cover",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"itinerary",
+										":itinerary-id",
+										"upload_cover"
+									],
+									"variable": [
+										{
+											"key": "itinerary-id",
+											"value": "82a2aa07-d14f-4cd7-b80d-adfa7233a49c"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Create Account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();",
+									"pm.environment.set('access_token', res.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"nascimento@gmail.com\",\n    \"password\": \"nascimento@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/create_account",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"create_account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();",
+									"pm.environment.set('access_token', res.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin@localhost\",\n    \"password\": \"admin@2024\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();",
+									"pm.environment.set('access_token', res.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"email@email.com\",\n    \"password\": \"MyPassword\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Me",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Public",
+			"item": [
+				{
+					"name": "List Intitutions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "ble",
+								"value": "bleble",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/public/institutions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"institutions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Institution Details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/public/institutions/:institution_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"institutions",
+								":institution_id"
+							],
+							"variable": [
+								{
+									"key": "institution_id",
+									"value": "1bee5aa0-9830-48e5-9977-9547403878d8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Itineraries on Institution",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/public/institutions/:institution_id/itineraries",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"institutions",
+								":institution_id",
+								"itineraries"
+							],
+							"variable": [
+								{
+									"key": "institution_id",
+									"value": "1bee5aa0-9830-48e5-9977-9547403878d8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Itinerary Details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/public/itineraries/:itinerary_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"itineraries",
+								":itinerary_id"
+							],
+							"variable": [
+								{
+									"key": "itinerary_id",
+									"value": "90f473da-d00f-4243-b019-a7dcd94154e6"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
