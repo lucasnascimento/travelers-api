@@ -7,6 +7,7 @@ from model.itineraryrule import Rule
 from model.itineraryphoto import Photo
 from model.itinerarydocument import Document
 from routes.responses import create_response, create_error_response
+from flask import request
 
 catalog_bp = Blueprint("catalog", __name__)
 
@@ -20,9 +21,18 @@ def list_institutions():
 
 @catalog_bp.route("/institutions/<institution_id>", methods=["GET"])
 def get_institution(institution_id):
+    x_password = request.headers.get("x-password")
+
+    if not x_password:
+        return create_error_response("unauthorized", 401)
+
     institution = Institution.query.filter_by(
         id=institution_id, is_deleted=False
     ).first()
+
+    if institution.password != x_password:
+        return create_error_response("unauthorized", 401)
+
     if institution is None:
         return create_error_response("not_found", 404)
 
@@ -49,6 +59,18 @@ def get_institution(institution_id):
 
 @catalog_bp.route("/institutions/<institution_id>/itineraries", methods=["GET"])
 def list_institution_itineraries(institution_id):
+    x_password = request.headers.get("x-password")
+
+    if not x_password:
+        return create_error_response("unauthorized", 401)
+
+    institution = Institution.query.filter_by(
+        id=institution_id, is_deleted=False
+    ).first()
+
+    if institution.password != x_password:
+        return create_error_response("unauthorized", 401)
+
     itineraries = Itinerary.query.filter_by(
         institution_id=institution_id, is_deleted=False
     ).all()
