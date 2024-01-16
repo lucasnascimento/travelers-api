@@ -37,6 +37,9 @@ class Institution(db.Model):
         result = {
             c.key: getattr(self, c.key) for c in db.inspect(self).mapper.column_attrs
         }
+
+        del result["password"] # Remove password from response
+
         if hasattr(self, "file") and self.file is not None:
             result["file"] = self.file.to_dict()
         return result
