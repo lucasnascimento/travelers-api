@@ -27,11 +27,13 @@ class File(db.Model):
     )
 
     def to_dict(self):
-        path = self.path.split("static")[1]
+        path = self.path
+        if self.region == "local":
+            path = f"/static{self.path.split('static')[1]}"
 
         return {
             "id": str(self.id),
-            "path": f"/static{path}",
+            "path": path,
             "file_name": self.file_name,
             "mime": self.mime,
             "size_bytes": self.size_bytes,
