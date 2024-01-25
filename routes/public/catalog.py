@@ -14,7 +14,9 @@ catalog_bp = Blueprint("catalog", __name__)
 
 @catalog_bp.route("/institutions", methods=["GET"])
 def list_institutions():
-    institutions = Institution.query.filter_by(is_deleted=False).all()
+    institutions = Institution.query.filter_by(
+        is_deleted=False, active_on_website=True
+    ).all()
     data = [institution.to_dict() for institution in institutions]
     return create_response(data)
 
