@@ -13,6 +13,13 @@ provider:
     subnetIds:
       - Ref: TravelerSubnet1
       - Ref: TravelerSubnet2
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource:
+        - arn:aws:s3:::${env:UPLOAD_BUCKET}
+        - arn:aws:s3:::${env:UPLOAD_BUCKET}/*
   environment:
     SQLALCHEMY_DATABASE_URI:
       Fn::Join:
@@ -30,9 +37,6 @@ provider:
     ENVIRONMENT: production
     UPLOAD_BUCKET: ${env:UPLOAD_BUCKET}
     UPLOAD_FOLDER: ${env:UPLOAD_FOLDER}
-    AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
-    AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
-    AWS_DEFAULT_REGION: ${env:AWS_DEFAULT_REGION}
 
 plugins:
   - serverless-wsgi
@@ -162,11 +166,6 @@ resources:
           Ref: TravelerDBSubnetGroupName
         VPCSecurityGroups:
           - Ref: TravelerDBSecurityGroup
-    TravelerBucket:
-      Type: "AWS::S3::Bucket"
-      Properties:
-        BucketName: ${env:UPLOAD_BUCKET}
-
     PublicSubnet:
       Type: "AWS::EC2::Subnet"
       Properties:
@@ -204,7 +203,6 @@ resources:
           Ref: PublicSubnet
         RouteTableId:
           Ref: PublicRouteTable
-
     BastionSecurityGroup:
       Type: "AWS::EC2::SecurityGroup"
       Properties:
@@ -216,7 +214,6 @@ resources:
             FromPort: 22
             ToPort: 22
             CidrIp: 177.200.70.41/0 # et minha casa!
-
     BastionHost:
       Type: "AWS::EC2::Instance"
       Properties:
@@ -231,7 +228,6 @@ resources:
               - Ref: BastionSecurityGroup
             SubnetId:
               Ref: PublicSubnet
-
   Outputs:
     TravelerDBURL:
       Description: The URL of the database
