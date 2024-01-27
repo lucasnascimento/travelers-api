@@ -5,14 +5,12 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate, upgrade
 
-import config
 from config import APP_SECRET_KEY, JWT_SECRET_KEY, SQLALCHEMY_DATABASE_URI
 from database import db
 from model.token import TokenBlocklist
 from model.user import User
 
 app = Flask(__name__)
-config.init_app(app)
 
 CORS(
     app,

@@ -27,6 +27,12 @@ provider:
           - ${env:DB_NAME}
     JWT_SECRET_KEY: ${env:JWT_SECRET_KEY}
     APP_SECRET_KEY: ${env:APP_SECRET_KEY}
+    ENVIRONMENT: production
+    UPLOAD_BUCKET: ${env:UPLOAD_BUCKET}
+    UPLOAD_FOLDER: ${env:UPLOAD_FOLDER}
+    AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    AWS_DEFAULT_REGION: ${env:AWS_DEFAULT_REGION}
 
 plugins:
   - serverless-wsgi
@@ -159,7 +165,7 @@ resources:
     TravelerBucket:
       Type: "AWS::S3::Bucket"
       Properties:
-        BucketName: ${env:UPLOAD_BUCKET_NAME}
+        BucketName: ${env:UPLOAD_BUCKET}
 
     PublicSubnet:
       Type: "AWS::EC2::Subnet"

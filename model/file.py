@@ -2,6 +2,8 @@ from datetime import datetime
 
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
+from config import ENVIRONMENT
+from upload import get_path, upload_file
 
 from database import db
 import uuid
@@ -26,10 +28,11 @@ class File(db.Model):
         db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow
     )
 
+    def get_path(self):
+        return get_path(self.region, self.path)
+
     def to_dict(self):
-        path = self.path
-        if self.region == "local":
-            path = f"/static{self.path.split('static')[1]}"
+        path = self.get_path()
 
         return {
             "id": str(self.id),

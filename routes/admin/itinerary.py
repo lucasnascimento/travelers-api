@@ -6,7 +6,8 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 from werkzeug.utils import secure_filename
 
-from config import UPLOAD_FOLDER
+from config import ENVIRONMENT
+from upload import upload_file
 from database import db
 from model.file import File
 from model.itinerary import Itinerary
@@ -41,7 +42,7 @@ def get_itinerary(itinerary_id):
     itinerary = Itinerary.query.filter_by(id=itinerary_id, is_deleted=False).first()
     if itinerary is None:
         return create_error_response("not_found", 404)
-    data=itinerary.to_dict()
+    data = itinerary.to_dict()
     return create_error_response(data)
 
 
@@ -85,18 +86,17 @@ def upload_cover(itinerary_id):
         file.seek(0, os.SEEK_END)
         size_bytes = file.tell()
         file.seek(0)
-        path = os.path.join(UPLOAD_FOLDER, filename)
+        path = upload_file(file, filename)
         new_file = File(
             id=new_uuid,
             mime=mime_type,
             path=path,
             file_name=filename,
-            region="local",
+            region=ENVIRONMENT,
             size_bytes=size_bytes,
         )
         db.session.add(new_file)
         db.session.flush()
-        file.save(os.path.join(UPLOAD_FOLDER, filename))
         db.session.query(Itinerary).filter_by(id=itinerary_id).update(
             {"cover_id": str(new_file.id)}
         )

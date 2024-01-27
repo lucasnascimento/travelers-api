@@ -3,9 +3,8 @@ import os
 SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI")
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 APP_SECRET_KEY = os.getenv("APP_SECRET_KEY")
-UPLOAD_FOLDER = None
+UPLOAD_BUCKET = os.getenv("UPLOAD_BUCKET")
+UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER")
+AWS_REGION = os.getenv("AWS_DEFAULT_REGION")
+ENVIRONMENT = os.getenv("ENVIRONMENT")
 
-
-def init_app(app):
-    global UPLOAD_FOLDER
-    UPLOAD_FOLDER = os.path.join(app.root_path, "static/uploads")
