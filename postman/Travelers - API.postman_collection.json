@@ -1250,7 +1250,7 @@
 									"variable": [
 										{
 											"key": "itinerary-id",
-											"value": "82a2aa07-d14f-4cd7-b80d-adfa7233a49c"
+											"value": "7ae6d0c1-c1cc-401c-8c0f-c9b107246ffc"
 										}
 									]
 								}
@@ -1270,7 +1270,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"is_deleted\": false,\n    \"status\": \"status\",\n    \"current_step\": \"current_step\",\n    \"title\": \"title\",\n    \"boarding_date\": \"2024-01-20\",\n    \"landing_date\": \"2024-01-31\",\n    \"seats\": 40,\n    \"seat_price\": 1234.56,\n    \"purchase_deadline\": \"purchase_deadline\",\n    \"installments\": \"installments\",\n    \"details\": \"details\",\n    \"summary\": \"summary\",\n    \"services\": \"services\",\n    \"terms_and_conditions\": \"terms_and_conditions\",\n    \"institution_id\": \"ef6ef264-6c96-4362-a0e3-4be545e18dff\"\n}",
+									"raw": "{\n    \"group_id\": \"2acd43d6-6745-4cdb-ac41-071137978163\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1291,7 +1291,7 @@
 									"variable": [
 										{
 											"key": "itinerary-id",
-											"value": "82a2aa07-d14f-4cd7-b80d-adfa7233a49c"
+											"value": "7ae6d0c1-c1cc-401c-8c0f-c9b107246ffc"
 										}
 									]
 								}

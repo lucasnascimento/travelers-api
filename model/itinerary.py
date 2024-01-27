@@ -8,6 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from model.file import File
 from model.institution import Institution
+from model.group import Group
 
 from database import db
 
@@ -34,13 +35,16 @@ class Itinerary(db.Model):
     summary: Mapped[str] = mapped_column(db.String, nullable=False)
     services: Mapped[str] = mapped_column(db.String, nullable=False)
     terms_and_conditions: Mapped[str] = mapped_column(db.String, nullable=False)
+
     institution_id: Mapped[Optional[str]] = mapped_column(ForeignKey("institution.id"))
     cover_id: Mapped[Optional[str]] = mapped_column(ForeignKey("file.id"))
+    group_id: Mapped[Optional[str]] = mapped_column(ForeignKey("group.id"))
 
     institution: Mapped[Optional[Institution]] = relationship(
         "Institution", uselist=False
     )
     cover: Mapped[Optional[File]] = relationship("File", uselist=False)
+    group: Mapped[Optional[Group]] = relationship("Group", uselist=False)
 
     is_deleted: Mapped[bool] = mapped_column(db.Boolean, default=False)
     inserted_at: Mapped[str] = mapped_column(
@@ -58,4 +62,6 @@ class Itinerary(db.Model):
             result["cover"] = self.cover.to_dict()
         if hasattr(self, "institution") and self.institution is not None:
             result["institution"] = self.institution.to_dict()
+        if hasattr(self, "group") and self.group is not None:
+            result["group"] = self.group.to_dict()
         return result
