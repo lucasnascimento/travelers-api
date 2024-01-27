@@ -1684,6 +1684,53 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Create Booking",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "x-password",
+								"value": "password muito simples",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"payer_name\": \"John Doe\",\n    \"payer_email\": \"john.doe@example.com\",\n    \"payer_phone\": \"123-456-7890\",\n    \"travelers\": [\n        {\n            \"traveler_name\": \"Alice\",\n            \"traveler_birthdate\": \"1990-01-01\",\n            \"traveler_gender\": \"Female\",\n            \"traveler_extras\": {\n                \"room-grade\": \"7a série\",\n                \"document-type\": \"RG\",\n                \"document-number\": \"00.000.000\",\n                \"document-date\": \"2001-01-01\",\n                \"document-issuer\": \"SSP-SP\"\n            }\n        },\n        {\n            \"traveler_name\": \"Bob\",\n            \"traveler_birthdate\": \"1992-02-02\",\n            \"traveler_gender\": \"Male\",\n            \"traveler_extras\": {\n                \"room-grade\": \"7b série\",\n                \"document-type\": \"RG\",\n                \"document-number\": \"00.000.001\",\n                \"document-date\": \"2001-01-01\",\n                \"document-issuer\": \"SSP-SP\"\n            }\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/public/booking/itineraries/:itinerary_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"public",
+								"booking",
+								"itineraries",
+								":itinerary_id"
+							],
+							"variable": [
+								{
+									"key": "itinerary_id",
+									"value": "7ae6d0c1-c1cc-401c-8c0f-c9b107246ffc"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
