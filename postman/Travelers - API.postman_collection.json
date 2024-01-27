@@ -219,7 +219,7 @@
 									"variable": [
 										{
 											"key": "institution-id",
-											"value": "ef6ef264-6c96-4362-a0e3-4be545e18dff"
+											"value": "dee269d0-bbb7-11ee-9135-1f79bfdd9d26"
 										}
 									]
 								}
@@ -1376,6 +1376,180 @@
 					]
 				},
 				{
+					"name": "Group",
+					"item": [
+						{
+							"name": "Create Group",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"description\": \"2 ano\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/group",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"group"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List Groups",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/group",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"group"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Group",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/group/:group_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"group",
+										":group_id"
+									],
+									"variable": [
+										{
+											"key": "group_id",
+											"value": "2acd43d6-6745-4cdb-ac41-071137978163"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Group",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"description\": \"Grupo aaaaaa\",\n    \"is_deleted\": false\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/group/:group_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"group",
+										":group_id"
+									],
+									"variable": [
+										{
+											"key": "group_id",
+											"value": "2acd43d6-6745-4cdb-ac41-071137978163"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Group",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/group/:group_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"group",
+										":group_id"
+									],
+									"variable": [
+										{
+											"key": "group_id",
+											"value": "2acd43d6-6745-4cdb-ac41-071137978163"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Create Account",
 					"event": [
 						{
@@ -1678,7 +1852,7 @@
 							"variable": [
 								{
 									"key": "itinerary_id",
-									"value": "7ae6d0c1-c1cc-401c-8c0f-c9b107246ffc"
+									"value": "90f473da-d00f-4243-b019-a7dcd94154e6"
 								}
 							]
 						}
@@ -1725,7 +1899,7 @@
 							"variable": [
 								{
 									"key": "itinerary_id",
-									"value": "7ae6d0c1-c1cc-401c-8c0f-c9b107246ffc"
+									"value": "90f473da-d00f-4243-b019-a7dcd94154e6"
 								}
 							]
 						}
