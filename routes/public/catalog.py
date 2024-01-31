@@ -113,32 +113,13 @@ def get_itinerary(itinerary_id):
     data["entries"] = entries_data
 
     photos = Photo.query.filter_by(itinerary_id=itinerary_id, is_deleted=False).all()
-    photos_data = [
-        {
-            "id": photo.id,
-            "position": photo.position,
-            "title": photo.title,
-            "description": photo.description,
-            "path": photo.photo.path if photo.photo else None,
-        }
-        for photo in photos
-    ]
+    photos_data = [photo.to_dict() for photo in photos]
     data["photos"] = photos_data
 
     documents = Document.query.filter_by(
         itinerary_id=itinerary_id, is_deleted=False
     ).all()
-    documents_data = [
-        {
-            "id": document.id,
-            "position": document.position,
-            "title": document.title,
-            "description": document.description,
-            "link": document.link,
-            "path": document.document.path if document.document else None,
-        }
-        for document in documents
-    ]
+    documents_data = [document.to_dict() for document in documents]
     data["documents"] = documents_data
 
     return create_response(data)
