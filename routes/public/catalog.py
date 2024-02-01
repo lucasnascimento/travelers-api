@@ -89,27 +89,11 @@ def get_itinerary(itinerary_id):
     data = itinerary.to_dict()
 
     rules = Rule.query.filter_by(itinerary_id=itinerary_id, is_deleted=False).all()
-    rules_data = [
-        {
-            "id": rule.id,
-            "position": rule.position,
-            "purchase_deadline": rule.purchase_deadline,
-            "installments": rule.installments,
-        }
-        for rule in rules
-    ]
+    rules_data = [rule.to_dict() for rule in rules]
     data["rules"] = rules_data
 
     entries = Entry.query.filter_by(itinerary_id=itinerary_id, is_deleted=False).all()
-    entries_data = [
-        {
-            "id": entry.id,
-            "position": entry.position,
-            "title": entry.title,
-            "description": entry.description,
-        }
-        for entry in entries
-    ]
+    entries_data = [entry.to_dict() for entry in entries]
     data["entries"] = entries_data
 
     photos = Photo.query.filter_by(itinerary_id=itinerary_id, is_deleted=False).all()

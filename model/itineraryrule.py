@@ -23,6 +23,16 @@ class Rule(db.Model):
 
     itinerary_id: Mapped[Optional[str]] = mapped_column(ForeignKey("itinerary.id"))
 
+    pix_discount: Mapped[float] = mapped_column(
+        db.Numeric, nullable=False, server_default="0"
+    )
+    seat_price: Mapped[float] = mapped_column(
+        db.Numeric, nullable=False, server_default="0"
+    )
+    montly_interest: Mapped[float] = mapped_column(
+        db.Numeric, nullable=False, server_default="0"
+    )
+
     is_deleted: Mapped[bool] = mapped_column(db.Boolean, default=False)
     inserted_at: Mapped[str] = mapped_column(
         db.DateTime, nullable=False, default=datetime.utcnow

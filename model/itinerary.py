@@ -46,6 +46,10 @@ class Itinerary(db.Model):
     cover: Mapped[Optional[File]] = relationship("File", uselist=False)
     group: Mapped[Optional[Group]] = relationship("Group", uselist=False)
 
+    pix_discount: Mapped[float] = mapped_column(
+        db.Numeric, nullable=False, server_default="0"
+    )
+
     is_deleted: Mapped[bool] = mapped_column(db.Boolean, default=False)
     inserted_at: Mapped[str] = mapped_column(
         db.DateTime, nullable=False, default=datetime.utcnow
