@@ -8,9 +8,13 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from model.file import File
 from model.institution import Institution
+from model.itineraryrule import Rule
 from model.group import Group
 
 from database import db
+
+from sqlalchemy import select, text
+from sqlalchemy.orm import column_property
 
 
 class Itinerary(db.Model):
@@ -28,9 +32,7 @@ class Itinerary(db.Model):
     boarding_date: Mapped[str] = mapped_column(db.Date, nullable=False)
     landing_date: Mapped[str] = mapped_column(db.Date, nullable=False)
     seats: Mapped[int] = mapped_column(db.Integer, nullable=False)
-    seat_price: Mapped[float] = mapped_column(db.Numeric, nullable=False)
-    purchase_deadline: Mapped[str] = mapped_column(db.Date, nullable=False)
-    installments: Mapped[str] = mapped_column(db.Integer, nullable=False)
+
     details: Mapped[str] = mapped_column(db.String, nullable=False)
     summary: Mapped[str] = mapped_column(db.String, nullable=False)
     services: Mapped[str] = mapped_column(db.String, nullable=False)
@@ -46,8 +48,49 @@ class Itinerary(db.Model):
     cover: Mapped[Optional[File]] = relationship("File", uselist=False)
     group: Mapped[Optional[Group]] = relationship("Group", uselist=False)
 
-    pix_discount: Mapped[float] = mapped_column(
-        db.Numeric, nullable=False, server_default="0"
+    purchase_deadline: Mapped[float] = column_property(
+        select(Rule.purchase_deadline)
+        .where(
+            Rule.itinerary_id == id
+            and Rule.is_deleted == False
+            and Rule.purchase_deadline >= datetime.utcnow()
+        )
+        .order_by(Rule.purchase_deadline.asc())
+        .limit(1)
+        .scalar_subquery()
+    )
+    seat_price: Mapped[float] = column_property(
+        select(Rule.seat_price)
+        .where(
+            Rule.itinerary_id == id
+            and Rule.is_deleted == False
+            and Rule.purchase_deadline >= datetime.utcnow()
+        )
+        .order_by(Rule.purchase_deadline.asc())
+        .limit(1)
+        .scalar_subquery()
+    )
+    installments: Mapped[float] = column_property(
+        select(Rule.installments)
+        .where(
+            Rule.itinerary_id == id
+            and Rule.is_deleted == False
+            and Rule.purchase_deadline >= datetime.utcnow()
+        )
+        .order_by(Rule.purchase_deadline.asc())
+        .limit(1)
+        .scalar_subquery()
+    )
+    pix_discount: Mapped[float] = column_property(
+        select(Rule.pix_discount)
+        .where(
+            Rule.itinerary_id == id
+            and Rule.is_deleted == False
+            and Rule.purchase_deadline >= datetime.utcnow()
+        )
+        .order_by(Rule.purchase_deadline.asc())
+        .limit(1)
+        .scalar_subquery()
     )
 
     is_deleted: Mapped[bool] = mapped_column(db.Boolean, default=False)
