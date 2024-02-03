@@ -93,6 +93,10 @@ class Itinerary(db.Model):
         .scalar_subquery()
     )
 
+    cancelation_rules: Mapped[str] = mapped_column(
+        db.String, nullable=False, server_default=""
+    )
+
     is_deleted: Mapped[bool] = mapped_column(db.Boolean, default=False)
     inserted_at: Mapped[str] = mapped_column(
         db.DateTime, nullable=False, default=datetime.utcnow
