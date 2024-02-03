@@ -1,6 +1,5 @@
 import json
 
-import iugu
 import requests
 from flask import Blueprint, request
 from marshmallow import Schema, ValidationError, fields
