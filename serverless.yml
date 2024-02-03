@@ -37,6 +37,7 @@ provider:
     ENVIRONMENT: production
     UPLOAD_BUCKET: ${env:UPLOAD_BUCKET}
     UPLOAD_FOLDER: ${env:UPLOAD_FOLDER}
+    IUGU_API_TOKEN: ${env:IUGU_API_TOKEN}
 
 plugins:
   - serverless-wsgi
