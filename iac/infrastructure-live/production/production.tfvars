@@ -1,0 +1,2 @@
+# production.tfvars
+environment = "production"
