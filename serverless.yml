@@ -46,6 +46,14 @@ plugins:
 package:
   patterns:
     - "!node_modules/**"
+    - "!static/uploads/**"
+    - "!iac/**"
+    - "!.env**"
+    - "!**/__pycache__/**"
+    - "!postman/**"
+    - "!.vscode/**"
+    - "!.venv/**"
+
 
 custom:
   wsgi:
