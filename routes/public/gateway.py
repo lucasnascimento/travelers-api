@@ -7,12 +7,13 @@ from routes.responses import create_response
 gateway_bp = Blueprint("gateway", __name__)
 
 
-@gateway_bp.route("/gateway/callback", methods=["GET", "POST"])
+@gateway_bp.route("/gateway/callback", methods=["POST"])
 def create_return():
+    body = request.form.to_dict()
     data = GatewayReturn(
         method=request.method,
         path=request.path,
-        body=request.get_json(),
+        body=body,
         headers=dict(request.headers),
     )
     db.session.add(data)
