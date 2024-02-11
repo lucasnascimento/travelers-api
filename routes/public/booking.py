@@ -77,6 +77,7 @@ def create_reservation(itinerary_id):
             traveler_birthdate=traveler["traveler_birthdate"],
             traveler_gender=traveler["traveler_gender"],
             traveler_extras=traveler["traveler_extras"],
+            total_cents=get_cents(itinerary.seat_price),
         )
         db.session.add(new_traveler)
 

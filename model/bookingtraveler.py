@@ -22,6 +22,7 @@ class BookingTraveler(db.Model):
     traveler_birthdate: Mapped[str] = mapped_column(db.Date, nullable=False)
     traveler_gender: Mapped[str] = mapped_column(db.String, nullable=False)
     traveler_extras: Mapped[str] = mapped_column(db.JSON, nullable=True)
+    total_cents: Mapped[int] = mapped_column(db.Integer, nullable=False, server_default="0")
 
     is_deleted: Mapped[bool] = mapped_column(db.Boolean, default=False)
     inserted_at: Mapped[str] = mapped_column(
