@@ -34,6 +34,12 @@ def create_return():
             status=status,
         )
         db.session.add(invoice_event)
+
+        # update invoice status
+        if event == "invoice.status_changed" and status == "paid":
+            invoice.status = "paid"
+            db.session.add(invoice)
+
         db.session.commit()
 
     return create_response("ok")
