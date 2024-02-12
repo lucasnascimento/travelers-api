@@ -1250,7 +1250,7 @@
 									"variable": [
 										{
 											"key": "itinerary-id",
-											"value": "7ae6d0c1-c1cc-401c-8c0f-c9b107246ffc"
+											"value": "90f473da-d00f-4243-b019-a7dcd94154e6"
 										}
 									]
 								}
@@ -1331,7 +1331,7 @@
 							"response": []
 						},
 						{
-							"name": "Upload logo",
+							"name": "Upload Cover",
 							"request": {
 								"method": "POST",
 								"header": [
@@ -1347,7 +1347,7 @@
 										{
 											"key": "file",
 											"type": "file",
-											"src": "/home/nascimento/Downloads/image (2).jpeg"
+											"src": "/home/nascimento/Downloads/background-cataratas.jpeg"
 										}
 									]
 								},
@@ -1366,7 +1366,7 @@
 									"variable": [
 										{
 											"key": "itinerary-id",
-											"value": "82a2aa07-d14f-4cd7-b80d-adfa7233a49c"
+											"value": "90f473da-d00f-4243-b019-a7dcd94154e6"
 										}
 									]
 								}
@@ -1550,6 +1550,44 @@
 					]
 				},
 				{
+					"name": "Booking",
+					"item": [
+						{
+							"name": "List Booking By Itinerary",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/itinerary/:itinerary_id/booking",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"itinerary",
+										":itinerary_id",
+										"booking"
+									],
+									"variable": [
+										{
+											"key": "itinerary_id",
+											"value": "90f473da-d00f-4243-b019-a7dcd94154e6"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Create Account",
 					"event": [
 						{
@@ -1723,6 +1761,76 @@
 			"name": "Public",
 			"item": [
 				{
+					"name": "Gateway",
+					"item": [
+						{
+							"name": "Create Gateway Return",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "event",
+											"value": " invoice.created",
+											"type": "text"
+										},
+										{
+											"key": "data[id]",
+											"value": " 1757E1D7FD5E410A9C563024250015BF",
+											"type": "text"
+										},
+										{
+											"key": "data[account_id]",
+											"value": " 70CA234077134ED0BF2E0E46B0EDC36F",
+											"type": "text"
+										},
+										{
+											"key": "data[status]",
+											"value": " pending",
+											"type": "text"
+										},
+										{
+											"key": "data[subscription_id]",
+											"value": " F4115E5E28AE4CCA941FCCCCCABE9A0A",
+											"type": "text"
+										},
+										{
+											"key": "data[source]",
+											"value": " api",
+											"type": "text"
+										},
+										{
+											"key": "data[order_id]",
+											"value": " N77579_31658163",
+											"type": "text"
+										},
+										{
+											"key": "data[external_reference]",
+											"value": " N55548889",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/public/gateway/callback",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"public",
+										"gateway",
+										"callback"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "List Intitutions",
 					"request": {
 						"method": "GET",
@@ -1877,7 +1985,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"payer_name\": \"John Doe\",\n    \"payer_email\": \"john.doe@example.com\",\n    \"payer_phone\": \"123-456-7890\",\n    \"travelers\": [\n        {\n            \"traveler_name\": \"Alice\",\n            \"traveler_birthdate\": \"1990-01-01\",\n            \"traveler_gender\": \"Female\",\n            \"traveler_extras\": {\n                \"room-grade\": \"7a série\",\n                \"document-type\": \"RG\",\n                \"document-number\": \"00.000.000\",\n                \"document-date\": \"2001-01-01\",\n                \"document-issuer\": \"SSP-SP\"\n            }\n        },\n        {\n            \"traveler_name\": \"Bob\",\n            \"traveler_birthdate\": \"1992-02-02\",\n            \"traveler_gender\": \"Male\",\n            \"traveler_extras\": {\n                \"room-grade\": \"7b série\",\n                \"document-type\": \"RG\",\n                \"document-number\": \"00.000.001\",\n                \"document-date\": \"2001-01-01\",\n                \"document-issuer\": \"SSP-SP\"\n            }\n        }\n    ]\n}",
+							"raw": "{\n    \"payer_name\": \"John Doe\",\n    \"payer_email\": \"john.doe@example.com\",\n    \"payer_phone\": \"123-456-7890\",\n    \"payer_document\": \"22168859833\",\n    \"payment_method\": \"credit_card\",\n    \"travelers\": [\n        {\n            \"traveler_name\": \"Alice\",\n            \"traveler_birthdate\": \"1990-01-01\",\n            \"traveler_gender\": \"Female\",\n            \"traveler_extras\": {\n                \"room-grade\": \"7a série\",\n                \"document-type\": \"RG\",\n                \"document-number\": \"00.000.000\",\n                \"document-date\": \"2001-01-01\",\n                \"document-issuer\": \"SSP-SP\"\n            }\n        },\n        {\n            \"traveler_name\": \"Bob\",\n            \"traveler_birthdate\": \"1992-02-02\",\n            \"traveler_gender\": \"Male\",\n            \"traveler_extras\": {\n                \"room-grade\": \"7b série\",\n                \"document-type\": \"RG\",\n                \"document-number\": \"00.000.001\",\n                \"document-date\": \"2001-01-01\",\n                \"document-issuer\": \"SSP-SP\"\n            }\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
