@@ -8,6 +8,15 @@ from routes.responses import create_response
 
 gateway_bp = Blueprint("gateway", __name__)
 
+events_map = {
+    "invoice.status_changed": {"paid": "PAID"},
+    "invoice.due": {"pending": "OVERDUE"},
+    "invoice.refund": {"refunded": "REFUNDED"},
+    "invoice.payment_failed": {"pending": "PAYMENT_FAILED"},
+    "invoice.installation_released": {"paid": "INSTALLMENT_PAID"},
+    "invoice.released": {"paid": "PAID"},
+}
+
 
 @gateway_bp.route("/gateway/callback", methods=["POST"])
 def create_return():
@@ -36,8 +45,8 @@ def create_return():
         db.session.add(invoice_event)
 
         # update invoice status
-        if event == "invoice.status_changed" and status == "paid":
-            invoice.status = "paid"
+        if event in events_map and status in events_map[event]:
+            invoice.status = events_map[event][status]
             db.session.add(invoice)
 
         db.session.commit()
