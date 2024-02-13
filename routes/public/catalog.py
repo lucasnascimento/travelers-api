@@ -43,18 +43,7 @@ def get_institution(institution_id):
     ).all()
 
     data = institution.to_dict()
-    data["itineraries"] = [
-        {
-            "id": itinerary.id,
-            "title": itinerary.title,
-            "boarding_date": itinerary.boarding_date,
-            "landing_date": itinerary.landing_date,
-            "seats": itinerary.seats,
-            "seat_price": itinerary.seat_price,
-            "cover": itinerary.cover.path if itinerary.cover else None,
-        }
-        for itinerary in itineraries
-    ]
+    data["itineraries"] = [itinerary.to_dict() for itinerary in itineraries]
 
     return create_response(data)
 
