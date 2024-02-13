@@ -18,6 +18,7 @@ CORS(
         "http://localhost:3000",
         "http://localhost:5173",
         "https://travelersapp-customer-frontend.vercel.app",
+        "https://travelers.app.br",
     ],
 )
 
