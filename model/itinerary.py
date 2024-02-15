@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, date
 from typing import Optional
 
 from sqlalchemy import ForeignKey
@@ -107,7 +107,7 @@ class Itinerary(db.Model):
 
     def to_dict(self):
         result = {
-            c.key: getattr(self, c.key) for c in db.inspect(self).mapper.column_attrs
+            c.key: format_if_date(getattr(self, c.key)) for c in db.inspect(self).mapper.column_attrs
         }
         if hasattr(self, "cover") and self.cover is not None:
             result["cover"] = self.cover.to_dict()
@@ -116,3 +116,9 @@ class Itinerary(db.Model):
         if hasattr(self, "group") and self.group is not None:
             result["group"] = self.group.to_dict()
         return result
+
+
+def format_if_date(value):
+    if isinstance(value, date):
+        return value.isoformat()
+    return value
