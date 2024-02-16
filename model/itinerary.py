@@ -45,8 +45,11 @@ class Itinerary(db.Model):
     institution: Mapped[Optional[Institution]] = relationship(
         "Institution", uselist=False
     )
-    cover: Mapped[Optional[File]] = relationship("File", uselist=False)
+    cover: Mapped[Optional[File]] = relationship("File", uselist=False, foreign_keys=[cover_id])
     group: Mapped[Optional[Group]] = relationship("Group", uselist=False)
+
+    cover_small_id: Mapped[Optional[str]] = mapped_column(ForeignKey("file.id"))
+    cover_small: Mapped[Optional[File]] = relationship("File", uselist=False, foreign_keys=[cover_small_id])
 
     purchase_deadline: Mapped[float] = column_property(
         select(Rule.purchase_deadline)
@@ -111,6 +114,8 @@ class Itinerary(db.Model):
         }
         if hasattr(self, "cover") and self.cover is not None:
             result["cover"] = self.cover.to_dict()
+        if hasattr(self, "cover_small") and self.cover_small is not None:
+            result["cover_small"] = self.cover_small.to_dict()
         if hasattr(self, "institution") and self.institution is not None:
             result["institution"] = self.institution.to_dict()
         if hasattr(self, "group") and self.group is not None:
