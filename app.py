@@ -20,6 +20,7 @@ CORS(
         "https://travelersapp-customer-frontend.vercel.app",
         "https://travelers.app.br",
         "https://admin.travelers.app.br",
+        "https://terranativa.travelers.app.br",
     ],
 )
 
