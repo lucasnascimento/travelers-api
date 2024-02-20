@@ -32,13 +32,16 @@ class Institution(db.Model):
     )
     file_id: Mapped[Optional[str]] = mapped_column(ForeignKey("file.id"))
     file: Mapped[Optional[File]] = relationship("File", uselist=False)
+    ranking: Mapped[float] = mapped_column(
+        db.Numeric, default="9999", server_default="9999"
+    )
 
     def to_dict(self):
         result = {
             c.key: getattr(self, c.key) for c in db.inspect(self).mapper.column_attrs
         }
 
-        del result["password"] # Remove password from response
+        del result["password"]  # Remove password from response
 
         if hasattr(self, "file") and self.file is not None:
             result["file"] = self.file.to_dict()

@@ -8,15 +8,18 @@ from model.itineraryphoto import Photo
 from model.itinerarydocument import Document
 from routes.responses import create_response, create_error_response
 from flask import request
+from sqlalchemy import asc, desc
 
 catalog_bp = Blueprint("catalog", __name__)
 
 
 @catalog_bp.route("/institutions", methods=["GET"])
 def list_institutions():
-    institutions = Institution.query.filter_by(
-        is_deleted=False, active_on_website=True
-    ).all()
+    institutions = (
+        Institution.query.filter_by(is_deleted=False, active_on_website=True)
+        .order_by(asc(Institution.ranking))
+        .all()
+    )
     data = [institution.to_dict() for institution in institutions]
     return create_response(data)
 
