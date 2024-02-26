@@ -74,9 +74,21 @@ def list_institution_itineraries(institution_id):
 
 @catalog_bp.route("/itineraries/<itinerary_id>", methods=["GET"])
 def get_itinerary(itinerary_id):
+    x_password = request.headers.get("x-password")
+
+    if not x_password:
+        return create_error_response("unauthorized", 401)
+
     itinerary = Itinerary.query.filter_by(id=itinerary_id, is_deleted=False).first()
     if itinerary is None:
         return jsonify(error="not_found"), 404
+
+    institution = Institution.query.filter_by(
+        id=itinerary.institution_id, is_deleted=False
+    ).first()
+
+    if institution.password != x_password:
+        return create_error_response("unauthorized", 401)
 
     data = itinerary.to_dict()
 
