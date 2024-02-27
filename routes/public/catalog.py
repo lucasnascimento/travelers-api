@@ -43,7 +43,7 @@ def get_institution(institution_id):
 
     itineraries = Itinerary.query.filter_by(
         institution_id=institution_id, is_deleted=False
-    ).all()
+    ).order_by(Itinerary.boarding_date).all()
 
     data = institution.to_dict()
     data["itineraries"] = [itinerary.to_dict() for itinerary in itineraries]
@@ -67,7 +67,7 @@ def list_institution_itineraries(institution_id):
 
     itineraries = Itinerary.query.filter_by(
         institution_id=institution_id, is_deleted=False
-    ).all()
+    ).order_by(Itinerary.boarding_date).all()
     data = [itinerary.to_dict() for itinerary in itineraries]
     return jsonify({"data": data})
 
