@@ -25,10 +25,13 @@ def get_booking(itinerary_id):
                bt.total_cents,
                i.id as invoice_id,
                i.status
-        FROM booking_traveler bt
-        INNER JOIN booking b ON b.id = bt.booking_id
-        INNER JOIN invoice i ON b.id = i.booking_id
-        WHERE b.itinerary_id = :itinerary_id
+          FROM booking_traveler bt
+         INNER JOIN booking b
+            ON b.id = bt.booking_id
+         INNER JOIN invoice i
+            ON b.id = i.booking_id
+         WHERE b.itinerary_id = :itinerary_id
+           AND b.is_deleted is false
         """
     )
     results = db.session.execute(query, {"itinerary_id": itinerary_id})
