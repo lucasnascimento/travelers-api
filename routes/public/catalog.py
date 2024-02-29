@@ -41,9 +41,11 @@ def get_institution(institution_id):
     if institution is None:
         return create_error_response("not_found", 404)
 
-    itineraries = Itinerary.query.filter_by(
-        institution_id=institution_id, is_deleted=False
-    ).order_by(Itinerary.boarding_date).all()
+    itineraries = (
+        Itinerary.query.filter_by(institution_id=institution_id, is_deleted=False)
+        .order_by(Itinerary.boarding_date)
+        .all()
+    )
 
     data = institution.to_dict()
     data["itineraries"] = [itinerary.to_dict() for itinerary in itineraries]
@@ -65,9 +67,11 @@ def list_institution_itineraries(institution_id):
     if institution.password != x_password:
         return create_error_response("unauthorized", 401)
 
-    itineraries = Itinerary.query.filter_by(
-        institution_id=institution_id, is_deleted=False
-    ).order_by(Itinerary.boarding_date).all()
+    itineraries = (
+        Itinerary.query.filter_by(institution_id=institution_id, is_deleted=False)
+        .order_by(Itinerary.boarding_date)
+        .all()
+    )
     data = [itinerary.to_dict() for itinerary in itineraries]
     return jsonify({"data": data})
 
@@ -92,21 +96,35 @@ def get_itinerary(itinerary_id):
 
     data = itinerary.to_dict()
 
-    rules = Rule.query.filter_by(itinerary_id=itinerary_id, is_deleted=False).all()
+    rules = (
+        Rule.query.filter_by(itinerary_id=itinerary_id, is_deleted=False)
+        .order_by(Rule.position)
+        .all()
+    )
     rules_data = [rule.to_dict() for rule in rules]
     data["rules"] = rules_data
 
-    entries = Entry.query.filter_by(itinerary_id=itinerary_id, is_deleted=False).all()
+    entries = (
+        Entry.query.filter_by(itinerary_id=itinerary_id, is_deleted=False)
+        .order_by(Entry.position)
+        .all()
+    )
     entries_data = [entry.to_dict() for entry in entries]
     data["entries"] = entries_data
 
-    photos = Photo.query.filter_by(itinerary_id=itinerary_id, is_deleted=False).all()
+    photos = (
+        Photo.query.filter_by(itinerary_id=itinerary_id, is_deleted=False)
+        .order_by(Photo.position)
+        .all()
+    )
     photos_data = [photo.to_dict() for photo in photos]
     data["photos"] = photos_data
 
-    documents = Document.query.filter_by(
-        itinerary_id=itinerary_id, is_deleted=False
-    ).all()
+    documents = (
+        Document.query.filter_by(itinerary_id=itinerary_id, is_deleted=False)
+        .order_by(Document.position)
+        .all()
+    )
     documents_data = [document.to_dict() for document in documents]
     data["documents"] = documents_data
 
