@@ -18,14 +18,26 @@ class Invoice(db.Model):
     )
     booking_id: Mapped[Optional[str]] = mapped_column(ForeignKey("booking.id"))
 
-    invoice_id: Mapped[Optional[str]] = mapped_column(db.String, nullable=False, index=True)
+    invoice_id: Mapped[Optional[str]] = mapped_column(
+        db.String, nullable=False, index=True
+    )
 
     status: Mapped[str] = mapped_column(db.String, nullable=False)
     method: Mapped[str] = mapped_column(db.String, nullable=False)
     due_date: Mapped[str] = mapped_column(db.DateTime, nullable=False)
-    total_cents: Mapped[int] = mapped_column(db.Integer, nullable=False, server_default="0")
+    items_total_cents: Mapped[int] = mapped_column(
+        db.Integer, nullable=False, server_default="0"
+    )
+    discount_cents: Mapped[int] = mapped_column(
+        db.Integer, nullable=False, server_default="0"
+    )
+    total_cents: Mapped[int] = mapped_column(
+        db.Integer, nullable=False, server_default="0"
+    )
 
     invoice_url: Mapped[Optional[str]] = mapped_column(db.String, nullable=True)
+
+    invoice_extras: Mapped[str] = mapped_column(db.JSON, nullable=True)
 
     is_deleted: Mapped[bool] = mapped_column(db.Boolean, default=False)
     inserted_at: Mapped[str] = mapped_column(

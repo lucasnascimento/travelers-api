@@ -102,18 +102,21 @@ def create_reservation(itinerary_id):
         "max_installments_value": itinerary.installments,
     }
 
-    total_cents = sum([get_cents(itinerary.seat_price) for _ in booking["travelers"]])
-    pix_discount_cents = int(total_cents * itinerary.pix_discount)
+    items_total_cents = sum(
+        [get_cents(itinerary.seat_price) for _ in booking["travelers"]]
+    )
 
+    discount_cents = 0
     if booking["payment_method"] == "pix":
-        data["discount_cents"] = pix_discount_cents
+        discount_cents = int(items_total_cents * itinerary.pix_discount)
+        data["discount_cents"] = discount_cents
+
+    total_cents = items_total_cents - discount_cents
 
     url = f"https://api.iugu.com/v1/invoices?api_token={IUGU_API_TOKEN}"
 
     payload = json.dumps(data)
-    headers = {
-      'Content-Type': 'application/json'
-    }
+    headers = {"Content-Type": "application/json"}
 
     response = requests.request("POST", url, headers=headers, data=payload)
 
@@ -126,6 +129,8 @@ def create_reservation(itinerary_id):
         method=booking["payment_method"],
         due_date=invoice_iugu["due_date"],
         invoice_url=invoice_iugu["secure_url"],
+        items_total_cents=items_total_cents,
+        discount_cents=discount_cents,
         total_cents=total_cents,
     )
     db.session.add(new_invoice)
