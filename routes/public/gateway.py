@@ -81,39 +81,40 @@ def updateInvoiceExtrasAndInstallments(db, invoice):
             "financial_return_dates"
         ]
         # upsert installments
-        for installment in invoice_iugu["financial_return_dates"]:
-            installment_id = installment["id"]
-            invoice_installment = InvoiceInstallment.query.filter_by(
-                invoice_id=internal_invoice_id,
-                external_installment_id=str(installment_id),
-            ).first()
-            if not invoice_installment:
-                invoice_installment = InvoiceInstallment(
-                    invoice_id=invoice.id,
-                    external_installment_id=installment_id,
-                    installment=(
-                        installment["installment"]
-                        if "installment" in installment
-                        else None
-                    ),
-                    due_date=(
-                        installment["return_date_iso"]
-                        if "return_date_iso" in installment
-                        else None
-                    ),
-                    amount_cents=(
-                        installment["amount_cents"]
-                        if "amount_cents" in installment
-                        else None
-                    ),
-                    status=installment["status"] if "status" in installment else None,
-                )
-                db.session.add(invoice_installment)
-            else:
-                invoice_installment.status = (
-                    installment["status"] if "status" in installment else None
-                )
-                db.session.add(invoice_installment)
+        if invoice_iugu["financial_return_dates"] is not None:
+            for installment in invoice_iugu["financial_return_dates"]:
+                installment_id = installment["id"]
+                invoice_installment = InvoiceInstallment.query.filter_by(
+                    invoice_id=internal_invoice_id,
+                    external_installment_id=str(installment_id),
+                ).first()
+                if not invoice_installment:
+                    invoice_installment = InvoiceInstallment(
+                        invoice_id=invoice.id,
+                        external_installment_id=installment_id,
+                        installment=(
+                            installment["installment"]
+                            if "installment" in installment
+                            else None
+                        ),
+                        due_date=(
+                            installment["return_date_iso"]
+                            if "return_date_iso" in installment
+                            else None
+                        ),
+                        amount_cents=(
+                            installment["amount_cents"]
+                            if "amount_cents" in installment
+                            else None
+                        ),
+                        status=installment["status"] if "status" in installment else None,
+                    )
+                    db.session.add(invoice_installment)
+                else:
+                    invoice_installment.status = (
+                        installment["status"] if "status" in installment else None
+                    )
+                    db.session.add(invoice_installment)
 
     version = invoice.invoice_extras if invoice.invoice_extras else {}
     if "versions" in version:
