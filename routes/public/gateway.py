@@ -1,9 +1,12 @@
-from flask import Blueprint, jsonify, request
+import requests
+from flask import Blueprint, request
 
+from config import IUGU_API_TOKEN
 from database import db
 from model.gatewayreturn import GatewayReturn
 from model.invoice import Invoice
 from model.invoiceevent import InvoiceEvent
+from model.invoiceinstallment import InvoiceInstallment
 from routes.responses import create_response
 
 gateway_bp = Blueprint("gateway", __name__)
@@ -49,6 +52,83 @@ def create_return():
             invoice.status = events_map[event][status]
             db.session.add(invoice)
 
+        updateInvoiceExtrasAndInstallments(db, invoice)
+
         db.session.commit()
 
     return create_response("ok")
+
+
+def updateInvoiceExtrasAndInstallments(db, invoice):
+    internal_invoice_id = invoice.id
+    external_invoice_id = invoice.invoice_id
+    url = f"https://api.iugu.com/v1/invoices/{external_invoice_id}?api_token={IUGU_API_TOKEN}"
+    headers = {"Content-Type": "application/json"}
+
+    response = requests.request("GET", url, headers=headers)
+    if response.status_code != 200:
+        return
+    invoice_iugu = response.json()
+    invoice_extras = {}
+    if "installments" in invoice_iugu:
+        invoice_extras["installments"] = invoice_iugu["installments"]
+    if "credit_card_transaction" in invoice_iugu:
+        invoice_extras["credit_card_transaction"] = invoice_iugu[
+            "credit_card_transaction"
+        ]
+    if "financial_return_dates" in invoice_iugu:
+        invoice_extras["financial_return_dates"] = invoice_iugu[
+            "financial_return_dates"
+        ]
+        # upsert installments
+        for installment in invoice_iugu["financial_return_dates"]:
+            installment_id = installment["id"]
+            invoice_installment = InvoiceInstallment.query.filter_by(
+                invoice_id=internal_invoice_id,
+                external_installment_id=str(installment_id),
+            ).first()
+            if not invoice_installment:
+                invoice_installment = InvoiceInstallment(
+                    invoice_id=invoice.id,
+                    external_installment_id=installment_id,
+                    installment=(
+                        installment["installment"]
+                        if "installment" in installment
+                        else None
+                    ),
+                    due_date=(
+                        installment["return_date_iso"]
+                        if "return_date_iso" in installment
+                        else None
+                    ),
+                    amount_cents=(
+                        installment["amount_cents"]
+                        if "amount_cents" in installment
+                        else None
+                    ),
+                    status=installment["status"] if "status" in installment else None,
+                )
+                db.session.add(invoice_installment)
+            else:
+                invoice_installment.status = (
+                    installment["status"] if "status" in installment else None
+                )
+                db.session.add(invoice_installment)
+
+    version = invoice.invoice_extras if invoice.invoice_extras else {}
+    if "versions" in version:
+        del version["versions"]
+    versions = (
+        (
+            invoice.invoice_extras["versions"]
+            if "versions" in invoice.invoice_extras
+            else []
+        )
+        if invoice.invoice_extras
+        else []
+    )
+    versions.insert(0, version)
+    invoice_extras["versions"] = versions
+
+    invoice.invoice_extras = invoice_extras
+    db.session.add(invoice)
