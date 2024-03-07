@@ -78,3 +78,56 @@ def get_finnancial_report(itinerary_id):
     return send_file(
         temp_path, as_attachment=True, download_name="finnancial_report.csv"
     )
+
+
+@admin_report_bp.route(
+    "/report/travelers", defaults={"itinerary_id": None}, methods=["GET"]
+)
+@admin_report_bp.route("/report/travelers/<itinerary_id>", methods=["GET"])
+@jwt_required()
+def get_travelers_report(itinerary_id):
+    query = text(
+        """
+         with travelers_report as (
+         select initcap(bt.traveler_name) as "Nome completo do viajante",
+                coalesce(
+                 bt.traveler_extras->'documents'->>'cpf','') as "CPF",
+                coalesce(
+                	bt.traveler_extras->'documents'->>'rg',
+                	bt.traveler_extras->'documents'->>'rne',
+                	''
+                ) as "RG/RNE",
+                initcap(b.payer_name) as "Nome do responsável",
+                b.payer_phone as "Telefone do responsável",
+                it.title as "Nome do roteiro"
+           from booking_traveler bt
+          inner join booking b on bt.booking_id = b.id
+          inner join itinerary it on it.id = b.itinerary_id
+          inner join invoice i on i.booking_id = b.id
+          where i.status = 'PAID'
+            and (:itinerary_id is NULL or it.id = :itinerary_id)
+         )
+         select * from travelers_report order by "Nome do roteiro", "Nome completo do viajante";
+        """
+    )
+    results = db.session.execute(query, {"itinerary_id": itinerary_id})
+    rows = results.fetchall()
+    column_names = results.keys()
+
+    with tempfile.NamedTemporaryFile(
+        mode="w+", delete=False, suffix=".csv", newline=""
+    ) as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=column_names)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(dict(zip(column_names, row)))
+        temp_path = csvfile.name
+
+    @after_this_request
+    def remove_file(response):
+        os.remove(temp_path)
+        return response
+
+    return send_file(
+        temp_path, as_attachment=True, download_name="travelers_report.csv"
+    )

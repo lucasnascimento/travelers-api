@@ -1615,6 +1615,98 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Travelers",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/report/travelers",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"report",
+										"travelers"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Finnancial By Itinerary",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/report/finnancial/:itinerarary_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"report",
+										"finnancial",
+										":itinerarary_id"
+									],
+									"variable": [
+										{
+											"key": "itinerarary_id",
+											"value": "90f473da-d00f-4243-b019-a7dcd94154e6"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Travelers By Itinerary",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/report/travelers/:itinerary_di",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"report",
+										"travelers",
+										":itinerary_di"
+									],
+									"variable": [
+										{
+											"key": "itinerary_di",
+											"value": "90f473da-d00f-4243-b019-a7dcd94154e6"
+										}
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
