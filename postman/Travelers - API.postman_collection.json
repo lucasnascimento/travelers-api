@@ -32,7 +32,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"PueriDomus Betel\",\n    \"document\": \"00.000.000/0001-91\",\n    \"has_banking_account\": true,\n    \"banking_account\": {\n        \"bank_code\": \"341\",\n        \"bank_agency\": \"0001\",\n        \"account_number\": \"1234-5\"\n    },\n    \"password\": \"password muito simples\"\n}",
+									"raw": "{\n    \"active_on_website\": true,\n    \"name\": \"Palmares\",\n    \"document\": \"00.000.000/0001-91\",\n    \"has_banking_account\": true,\n    \"banking_account\": {\n        \"bank_code\": \"341\",\n        \"bank_agency\": \"0001\",\n        \"account_number\": \"1234-5\"\n    },\n    \"password\": \"zabumba\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -200,7 +200,7 @@
 										{
 											"key": "file",
 											"type": "file",
-											"src": "/home/nascimento/Downloads/image (2).jpeg"
+											"src": "/home/nascimento/Desktop/Logo das Instituições/Colégio Santo Américo.png"
 										}
 									]
 								},
@@ -219,7 +219,7 @@
 									"variable": [
 										{
 											"key": "institution-id",
-											"value": "dee269d0-bbb7-11ee-9135-1f79bfdd9d26"
+											"value": "d454dba1-edf0-4524-b6a7-45eb5d6cc71b"
 										}
 									]
 								}
@@ -1588,6 +1588,37 @@
 					]
 				},
 				{
+					"name": "Report",
+					"item": [
+						{
+							"name": "Finnancial",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/report/finnancial",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"admin",
+										"report",
+										"finnancial"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "Create Account",
 					"event": [
 						{
@@ -1773,42 +1804,42 @@
 									"formdata": [
 										{
 											"key": "event",
-											"value": " invoice.created",
+											"value": "invoice.status_changed",
 											"type": "text"
 										},
 										{
 											"key": "data[id]",
-											"value": " 1757E1D7FD5E410A9C563024250015BF",
+											"value": "2423ACABC671424DB678A720EAAE5BAA",
 											"type": "text"
 										},
 										{
 											"key": "data[account_id]",
-											"value": " 70CA234077134ED0BF2E0E46B0EDC36F",
+											"value": "70CA234077134ED0BF2E0E46B0EDC36F",
 											"type": "text"
 										},
 										{
 											"key": "data[status]",
-											"value": " pending",
+											"value": "paid",
 											"type": "text"
 										},
 										{
 											"key": "data[subscription_id]",
-											"value": " F4115E5E28AE4CCA941FCCCCCABE9A0A",
+											"value": "F4115E5E28AE4CCA941FCCCCCABE9A0A",
 											"type": "text"
 										},
 										{
 											"key": "data[source]",
-											"value": " api",
+											"value": "api",
 											"type": "text"
 										},
 										{
 											"key": "data[order_id]",
-											"value": " N77579_31658163",
+											"value": "N77579_31658163",
 											"type": "text"
 										},
 										{
 											"key": "data[external_reference]",
-											"value": " N55548889",
+											"value": "N55548889",
 											"type": "text"
 										}
 									]
@@ -1944,6 +1975,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "x-password",
+								"value": "Pueri25TN",
+								"type": "text"
 							}
 						],
 						"url": {
@@ -1985,7 +2021,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"payer_name\": \"John Doe\",\n    \"payer_email\": \"john.doe@example.com\",\n    \"payer_phone\": \"123-456-7890\",\n    \"payer_document\": \"22168859833\",\n    \"payment_method\": \"credit_card\",\n    \"travelers\": [\n        {\n            \"traveler_name\": \"Alice\",\n            \"traveler_birthdate\": \"1990-01-01\",\n            \"traveler_gender\": \"Female\",\n            \"traveler_extras\": {\n                \"room-grade\": \"7a série\",\n                \"document-type\": \"RG\",\n                \"document-number\": \"00.000.000\",\n                \"document-date\": \"2001-01-01\",\n                \"document-issuer\": \"SSP-SP\"\n            }\n        },\n        {\n            \"traveler_name\": \"Bob\",\n            \"traveler_birthdate\": \"1992-02-02\",\n            \"traveler_gender\": \"Male\",\n            \"traveler_extras\": {\n                \"room-grade\": \"7b série\",\n                \"document-type\": \"RG\",\n                \"document-number\": \"00.000.001\",\n                \"document-date\": \"2001-01-01\",\n                \"document-issuer\": \"SSP-SP\"\n            }\n        }\n    ]\n}",
+							"raw": "{\n    \"payer_name\": \"John Doe\",\n    \"payer_email\": \"john.doe@example.com\",\n    \"payer_phone\": \"123-456-7890\",\n    \"payer_document\": \"22168859833\",\n    \"payment_method\": \"pix\",\n    \"travelers\": [\n        {\n            \"traveler_name\": \"Alice\",\n            \"traveler_birthdate\": \"1990-01-01\",\n            \"traveler_gender\": \"Female\",\n            \"traveler_extras\": {\n                \"room-grade\": \"7a série\",\n                \"document-type\": \"RG\",\n                \"document-number\": \"00.000.000\",\n                \"document-date\": \"2001-01-01\",\n                \"document-issuer\": \"SSP-SP\"\n            }\n        },\n        {\n            \"traveler_name\": \"Bob\",\n            \"traveler_birthdate\": \"1992-02-02\",\n            \"traveler_gender\": \"Male\",\n            \"traveler_extras\": {\n                \"room-grade\": \"7b série\",\n                \"document-type\": \"RG\",\n                \"document-number\": \"00.000.001\",\n                \"document-date\": \"2001-01-01\",\n                \"document-issuer\": \"SSP-SP\"\n            }\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"

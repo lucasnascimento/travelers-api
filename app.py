@@ -75,6 +75,7 @@ from routes.admin.itineraryphoto import itinerary_photo_bp
 from routes.admin.itineraryrule import itinerary_rule_bp
 from routes.admin.booking import admin_booking_bp as admin_booking_bp
 from routes.admin.user import user_bp
+from routes.admin.report import admin_report_bp
 from routes.public.catalog import catalog_bp
 from routes.public.booking import booking_bp
 from routes.public.gateway import gateway_bp
@@ -88,6 +89,7 @@ app.register_blueprint(itinerary_rule_bp, url_prefix="/api/admin")
 app.register_blueprint(itinerary_photo_bp, url_prefix="/api/admin")
 app.register_blueprint(itinerary_document_bp, url_prefix="/api/admin")
 app.register_blueprint(admin_booking_bp, url_prefix="/api/admin")
+app.register_blueprint(admin_report_bp, url_prefix="/api/admin")
 app.register_blueprint(catalog_bp, url_prefix="/api/public")
 app.register_blueprint(booking_bp, url_prefix="/api/public")
 app.register_blueprint(gateway_bp, url_prefix="/api/public")
