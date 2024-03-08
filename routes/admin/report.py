@@ -97,6 +97,8 @@ def get_travelers_report(itinerary_id):
                 	bt.traveler_extras->'documents'->>'rne',
                 	''
                 ) as "RG/RNE",
+                bt.traveler_extras->>'room-grade' as "Unidade",
+                bt.inserted_at::date as "Data da reserva",
                 initcap(b.payer_name) as "Nome do responsável",
                 b.payer_phone as "Telefone do responsável",
                 it.title as "Nome do roteiro"
