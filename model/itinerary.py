@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, date
 from typing import Optional
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -45,11 +45,15 @@ class Itinerary(db.Model):
     institution: Mapped[Optional[Institution]] = relationship(
         "Institution", uselist=False
     )
-    cover: Mapped[Optional[File]] = relationship("File", uselist=False, foreign_keys=[cover_id])
+    cover: Mapped[Optional[File]] = relationship(
+        "File", uselist=False, foreign_keys=[cover_id]
+    )
     group: Mapped[Optional[Group]] = relationship("Group", uselist=False)
 
     cover_small_id: Mapped[Optional[str]] = mapped_column(ForeignKey("file.id"))
-    cover_small: Mapped[Optional[File]] = relationship("File", uselist=False, foreign_keys=[cover_small_id])
+    cover_small: Mapped[Optional[File]] = relationship(
+        "File", uselist=False, foreign_keys=[cover_small_id]
+    )
 
     purchase_deadline: Mapped[float] = column_property(
         select(Rule.purchase_deadline)
@@ -110,8 +114,14 @@ class Itinerary(db.Model):
 
     def to_dict(self):
         result = {
-            c.key: format_if_date(getattr(self, c.key)) for c in db.inspect(self).mapper.column_attrs
+            c.key: format_if_date(getattr(self, c.key))
+            for c in db.inspect(self).mapper.column_attrs
         }
+        sold_seats = self.get_sold_seats()
+        result["sold_seats"] = sold_seats
+        if sold_seats >= self.seats:
+            result["status"] = "sold_out"
+
         if hasattr(self, "cover") and self.cover is not None:
             result["cover"] = self.cover.to_dict()
         if hasattr(self, "cover_small") and self.cover_small is not None:
@@ -121,6 +131,21 @@ class Itinerary(db.Model):
         if hasattr(self, "group") and self.group is not None:
             result["group"] = self.group.to_dict()
         return result
+
+    def get_sold_seats(self) -> int:
+        from model.bookingtraveler import BookingTraveler
+        from model.booking import Booking
+        from model.invoice import Invoice
+
+        query = (
+            db.session.query(func.count(BookingTraveler.id).label("seats_sold"))
+            .join(Booking, BookingTraveler.booking_id == Booking.id)
+            .join(Invoice, Invoice.booking_id == Booking.id)
+            .filter(Invoice.status == "PAID")
+            .filter(Booking.itinerary_id == self.id)
+        )
+
+        return query.scalar()
 
 
 def format_if_date(value):

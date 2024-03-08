@@ -34,7 +34,9 @@ class BookingSchema(Schema):
 
 @booking_bp.route("/booking/itineraries/<itinerary_id>", methods=["POST"])
 def create_reservation(itinerary_id):
-    itinerary = Itinerary.query.filter_by(id=itinerary_id, is_deleted=False).first()
+    itinerary: Itinerary = Itinerary.query.filter_by(
+        id=itinerary_id, is_deleted=False
+    ).first()
 
     if itinerary is None:
         return create_error_response("not_found", 404)
@@ -53,6 +55,11 @@ def create_reservation(itinerary_id):
 
     if institution is None:
         return create_error_response("not_found", 404)
+
+    sold_seats = itinerary.get_sold_seats()
+
+    if sold_seats >= itinerary.seats:
+        return create_error_response("sold_out", 400)
 
     schema = BookingSchema()
     try:
