@@ -122,6 +122,19 @@ class Itinerary(db.Model):
         if sold_seats >= self.seats:
             result["status"] = "sold_out"
 
+        payment_rule = self.get_current_payment_rule()
+        if payment_rule is not None:
+            result["purchase_deadline"] = format_if_date(payment_rule.purchase_deadline)
+            result["seat_price"] = payment_rule.seat_price
+            result["installments"] = payment_rule.installments
+            result["pix_discount"] = payment_rule.pix_discount
+        else:
+            result["purchase_deadline"] = None
+            result["seat_price"] = None
+            result["installments"] = None
+            result["pix_discount"] = None
+            result["status"] = "booking_closed"
+
         if hasattr(self, "cover") and self.cover is not None:
             result["cover"] = self.cover.to_dict()
         if hasattr(self, "cover_small") and self.cover_small is not None:
@@ -146,6 +159,24 @@ class Itinerary(db.Model):
         )
 
         return query.scalar()
+
+    def get_current_payment_rule(self):
+        from model.itineraryrule import Rule
+        import pytz
+
+        brazil_tz = pytz.timezone("America/Sao_Paulo")
+        dt = datetime.now(brazil_tz)
+        dt_str = dt.strftime("%Y-%m-%d %H:%M:%S")
+        print(dt_str)
+        query = (
+            db.session.query(Rule)
+            .filter(Rule.itinerary_id == self.id)
+            .filter(Rule.is_deleted == False)
+            .filter(Rule.purchase_deadline >= datetime.now(brazil_tz))
+            .order_by(Rule.purchase_deadline.asc())
+        )
+
+        return query.first()
 
 
 def format_if_date(value):

@@ -61,6 +61,17 @@ def create_reservation(itinerary_id):
     if sold_seats >= itinerary.seats:
         return create_error_response("sold_out", 400)
 
+    # TODO: this is a temporary soluton once thi is duplicated code from
+    # model/itinerary.py we need understand why the column_property is not
+    # woking properly
+    current_payment_rule = itinerary.get_current_payment_rule()
+    if current_payment_rule is None:
+        return create_error_response("booking_closed", 400)
+    itinerary.purchase_deadline = current_payment_rule.purchase_deadline
+    itinerary.seat_price = current_payment_rule.seat_price
+    itinerary.installments = current_payment_rule.installments
+    itinerary.pix_discount = current_payment_rule.pix_discount
+
     schema = BookingSchema()
     try:
         booking = schema.load(request.get_json())
