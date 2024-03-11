@@ -90,15 +90,18 @@ def get_travelers_report(itinerary_id):
         """
          with travelers_report as (
          select initcap(bt.traveler_name) as "Nome completo do viajante",
-                coalesce(
-                 bt.traveler_extras->'documents'->>'cpf','') as "CPF",
-                coalesce(
-                	bt.traveler_extras->'documents'->>'rg',
-                	bt.traveler_extras->'documents'->>'rne',
-                	''
-                ) as "RG/RNE",
+                bt.traveler_extras->'documents'->>'cpf' as "CPF",
+                bt.traveler_extras->'documents'->>'rg' as "RG",
+                bt.traveler_extras->>'document-date' as "RG emissão",
+                bt.traveler_extras->>'document-issuer' as "RG emissor",
+                bt.traveler_extras->'documents'->>'rne' as "RNE",
                 bt.traveler_extras->>'room-grade' as "Unidade",
-                bt.traveler_birthdate as "Data nascimento do viajante",
+                bt.traveler_birthdate as "Data nascimento",
+                case
+                	when bt.traveler_gender = 'Male' then 'Masculino'
+                	when bt.traveler_gender = 'Female' then 'Feminino'
+                	when bt.traveler_gender = 'Other' then 'Outro'
+                end as "Gênero do viajante",
                 bt.inserted_at::date as "Data da reserva",
                 initcap(b.payer_name) as "Nome do responsável",
                 b.payer_phone as "Telefone do responsável",
