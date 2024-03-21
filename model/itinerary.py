@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime, date
 from typing import Optional
+import pytz
 
 from sqlalchemy import ForeignKey, func
 from sqlalchemy.dialects.postgresql import UUID
@@ -123,16 +124,14 @@ class Itinerary(db.Model):
             result["status"] = "sold_out"
 
         payment_rule = self.get_current_payment_rule()
-        if payment_rule is not None:
-            result["purchase_deadline"] = format_if_date(payment_rule.purchase_deadline)
-            result["seat_price"] = payment_rule.seat_price
-            result["installments"] = payment_rule.installments
-            result["pix_discount"] = payment_rule.pix_discount
-        else:
-            result["purchase_deadline"] = None
-            result["seat_price"] = None
-            result["installments"] = None
-            result["pix_discount"] = None
+        result["purchase_deadline"] = format_if_date(payment_rule.purchase_deadline)
+        result["seat_price"] = payment_rule.seat_price
+        result["installments"] = payment_rule.installments
+        result["pix_discount"] = payment_rule.pix_discount
+
+        brazil_tz = pytz.timezone("America/Sao_Paulo")
+        now = datetime.now(brazil_tz).date()
+        if now > payment_rule.purchase_deadline:
             result["status"] = "booking_closed"
 
         if hasattr(self, "cover") and self.cover is not None:
@@ -162,21 +161,29 @@ class Itinerary(db.Model):
 
     def get_current_payment_rule(self):
         from model.itineraryrule import Rule
-        import pytz
 
         brazil_tz = pytz.timezone("America/Sao_Paulo")
-        dt = datetime.now(brazil_tz)
-        dt_str = dt.strftime("%Y-%m-%d %H:%M:%S")
-        print(dt_str)
+        now = datetime.now(brazil_tz).date()
         query = (
             db.session.query(Rule)
             .filter(Rule.itinerary_id == self.id)
             .filter(Rule.is_deleted == False)
-            .filter(Rule.purchase_deadline >= datetime.now(brazil_tz))
             .order_by(Rule.purchase_deadline.asc())
         )
 
-        return query.first()
+        payment_rules = query.all()
+
+        # future me, please find a better way to do this
+        # we have to find the first rule that has a purchase_deadline greater than the current date
+        # and return if all rules are in the past
+        # then return the last rule
+        payment_rule = payment_rules[-1]
+        for rule in payment_rules:
+            if now <= rule.purchase_deadline:
+                payment_rule = rule
+                break
+
+        return payment_rule
 
 
 def format_if_date(value):
