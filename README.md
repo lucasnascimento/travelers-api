@@ -6,10 +6,10 @@ Este projeto é o backend para o projeto travellers.app.br
 
 Antes de começar, certifique-se de ter instalado:
 
-- [Python](https://www.python.org/downloads/)
-- [Docker](https://www.docker.com/get-started/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
-- [Direnv](https://direnv.net/docs/installation.html)
+- [Python v3.12](https://www.python.org/downloads/)
+- [Docker 25.0.1](https://www.docker.com/get-started/)
+- [Docker Compose v2.24.2](https://docs.docker.com/compose/install/)
+- [Direnv 2.21.2](https://direnv.net/docs/installation.html)
 
 ## Variáveis de ambiente
 
