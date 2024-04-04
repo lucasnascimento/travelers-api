@@ -43,7 +43,7 @@ def get_itinerary(itinerary_id):
     if itinerary is None:
         return create_error_response("not_found", 404)
     data = itinerary.to_dict()
-    return create_error_response(data)
+    return create_response(data)
 
 
 @itinerary_bp.route("/itinerary/<itinerary_id>", methods=["PUT"])
