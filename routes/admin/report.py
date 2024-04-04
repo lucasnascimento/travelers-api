@@ -105,10 +105,12 @@ def get_travelers_report(itinerary_id):
                 bt.inserted_at::date as "Data da reserva",
                 initcap(b.payer_name) as "Nome do responsável",
                 b.payer_phone as "Telefone do responsável",
+                inst.name as "Nome da instituição",
                 it.title as "Nome do roteiro"
            from booking_traveler bt
           inner join booking b on bt.booking_id = b.id
           inner join itinerary it on it.id = b.itinerary_id
+          inner join institution inst on inst.id = it.institution_id
           inner join invoice i on i.booking_id = b.id
           where i.status = 'PAID'
             and (:itinerary_id is NULL or it.id = :itinerary_id)
