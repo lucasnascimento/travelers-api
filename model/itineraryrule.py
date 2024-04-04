@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, date
 from typing import Optional
 
 from sqlalchemy import ForeignKey
@@ -43,5 +43,12 @@ class Rule(db.Model):
 
     def to_dict(self):
         return {
-            c.key: getattr(self, c.key) for c in db.inspect(self).mapper.column_attrs
+            c.key: format_if_date(getattr(self, c.key))
+            for c in db.inspect(self).mapper.column_attrs
         }
+
+
+def format_if_date(value):
+    if isinstance(value, date):
+        return value.isoformat()
+    return value
