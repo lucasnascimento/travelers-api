@@ -1,5 +1,7 @@
+import datetime
 import json
 
+import pytz
 import requests
 from flask import Blueprint, request
 from marshmallow import Schema, ValidationError, fields
@@ -99,9 +101,21 @@ def create_reservation(itinerary_id):
         )
         db.session.add(new_traveler)
 
+    # due_date is tomorrow
+    brazil_tz = pytz.timezone("America/Sao_Paulo")
+    now = datetime.datetime.now(brazil_tz).date()
+    due_date = now + datetime.timedelta(days=1)
+
+    # if due_date is greater than purchase_deadline, due_date is purchase_deadline
+    if due_date > itinerary.purchase_deadline:
+        due_date = itinerary.purchase_deadline
+
+    # format due_date to yyyy-mm-dd
+    due_date = due_date.strftime("%Y-%m-%d")
+
     data = {
         "email": booking["payer_email"],
-        "due_date": itinerary.purchase_deadline.strftime("%Y-%m-%d"),
+        "due_date": due_date,
         "items": [
             {
                 "description": traveler["traveler_name"],
