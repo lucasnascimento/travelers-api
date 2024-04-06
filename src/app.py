@@ -85,7 +85,7 @@ app.register_blueprint(booking_bp, url_prefix="/api/public")
 app.register_blueprint(gateway_bp, url_prefix="/api/public")
 
 with app.app_context():
-    upgrade()
+    upgrade("migrations/public")
 
     user = User.query.filter_by(email="admin@localhost").first()
     if not user:
