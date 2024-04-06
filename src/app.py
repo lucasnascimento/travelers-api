@@ -8,7 +8,7 @@ from flask_migrate import Migrate, upgrade
 from config import APP_SECRET_KEY, JWT_SECRET_KEY, SQLALCHEMY_DATABASE_URI
 from database import db
 from model.token import TokenBlocklist
-from model.user import User
+from model.user import User, Organization, UserOrganization
 
 app = Flask(__name__)
 
@@ -91,6 +91,22 @@ with app.app_context():
     if not user:
         user = User(email="admin@localhost", password="admin@2024")
         db.session.add(user)
+        db.session.commit()
+
+    organization = Organization.query.filter_by(name="Org1").first()
+    if not organization:
+        organization = Organization(name="Org1", schema="org1", domain="org1")
+        db.session.add(organization)
+        db.session.commit()
+
+    user_organization = UserOrganization.query.filter_by(
+        user_id=user.id, organization_id=organization.id
+    ).first()
+    if not user_organization:
+        user_organization = UserOrganization(
+            user_id=user.id, organization_id=organization.id
+        )
+        db.session.add(user_organization)
         db.session.commit()
 
     user_count = User.query.count()
