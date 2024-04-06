@@ -1,6 +1,6 @@
 __pycache__
 .venv
-static/uploads
+/src/static/uploads
 .envrc
 node_modules
 .serverless

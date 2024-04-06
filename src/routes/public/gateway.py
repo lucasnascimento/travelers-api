@@ -108,7 +108,9 @@ def updateInvoiceExtrasAndInstallments(db, invoice):
                             if "amount_cents" in installment
                             else None
                         ),
-                        status=installment["status"] if "status" in installment else None,
+                        status=(
+                            installment["status"] if "status" in installment else None
+                        ),
                     )
                     db.session.add(invoice_installment)
                 else:

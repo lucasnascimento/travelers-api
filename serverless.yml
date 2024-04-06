@@ -57,7 +57,7 @@ package:
 
 custom:
   wsgi:
-    app: app.app
+    app: src.app.app
     packRequirements: false
   pythonRequirements:
     pipCmdExtraArgs:
