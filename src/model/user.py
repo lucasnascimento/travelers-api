@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from typing import Optional
 
 import bcrypt
 from sqlalchemy.dialects.postgresql import UUID
@@ -16,6 +17,11 @@ class User(db.Model):
     )
     email: Mapped[str] = mapped_column(db.String, unique=True, nullable=False)
     hashed_password: Mapped[str] = mapped_column(db.String, nullable=False)
+
+    is_superuser: Mapped[Optional[bool]] = mapped_column(
+        db.Boolean, nullable=False, default=False, server_default="false"
+    )
+
     inserted_at: Mapped[str] = mapped_column(
         db.DateTime, nullable=False, default=datetime.utcnow
     )

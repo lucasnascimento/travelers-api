@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 
 from flask import Flask
@@ -8,7 +9,7 @@ from flask_migrate import Migrate, upgrade
 from config import APP_SECRET_KEY, JWT_SECRET_KEY, SQLALCHEMY_DATABASE_URI
 from database import db
 from model.token import TokenBlocklist
-from model.user import User, Organization, UserOrganization
+from model.user import Organization, User, UserOrganization
 
 app = Flask(__name__)
 
@@ -85,29 +86,34 @@ app.register_blueprint(booking_bp, url_prefix="/api/public")
 app.register_blueprint(gateway_bp, url_prefix="/api/public")
 
 with app.app_context():
-    upgrade("migrations/public")
+    flask_migrate = os.environ.get("FLASK_MIGRATE")
+    if flask_migrate != "true":
+        upgrade("migrations/public")
 
-    user = User.query.filter_by(email="admin@localhost").first()
-    if not user:
-        user = User(email="admin@localhost", password="admin@2024")
-        db.session.add(user)
-        db.session.commit()
+        user = User.query.filter_by(email="admin@localhost").first()
+        if not user:
+            user = User(email="admin@localhost", password="admin@2024")
+            db.session.add(user)
+            db.session.commit()
+        elif not user.is_superuser:
+            user.is_superuser = True
+            db.session.commit()
 
-    organization = Organization.query.filter_by(name="Org1").first()
-    if not organization:
-        organization = Organization(name="Org1", schema="org1", domain="org1")
-        db.session.add(organization)
-        db.session.commit()
+        organization = Organization.query.filter_by(name="Org1").first()
+        if not organization:
+            organization = Organization(name="Org1", schema="org1", domain="org1")
+            db.session.add(organization)
+            db.session.commit()
 
-    user_organization = UserOrganization.query.filter_by(
-        user_id=user.id, organization_id=organization.id
-    ).first()
-    if not user_organization:
-        user_organization = UserOrganization(
+        user_organization = UserOrganization.query.filter_by(
             user_id=user.id, organization_id=organization.id
-        )
-        db.session.add(user_organization)
-        db.session.commit()
+        ).first()
+        if not user_organization:
+            user_organization = UserOrganization(
+                user_id=user.id, organization_id=organization.id
+            )
+            db.session.add(user_organization)
+            db.session.commit()
 
-    user_count = User.query.count()
-    app.logger.info(f"user_count={user_count}")
+        user_count = User.query.count()
+        app.logger.info(f"user_count={user_count}")
