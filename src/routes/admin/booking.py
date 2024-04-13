@@ -1,10 +1,17 @@
 from flask import Blueprint
 from flask_jwt_extended import jwt_required
 from sqlalchemy import text
+
 from database import db
+from routes.middleware import switch_tenant_by_jwt
 from routes.responses import create_response
 
 admin_booking_bp = Blueprint("admin_booking", __name__)
+
+
+@admin_booking_bp.before_request
+def before_request():
+    switch_tenant_by_jwt()
 
 
 @admin_booking_bp.route("/itinerary/<itinerary_id>/booking", methods=["GET"])

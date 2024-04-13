@@ -10,10 +10,16 @@ from config import ENVIRONMENT
 from database import db
 from model.file import File
 from model.institution import Institution
+from routes.middleware import switch_tenant_by_jwt
 from routes.responses import create_error_response, create_response
 from upload import upload_file
 
 institution_bp = Blueprint("institution", __name__)
+
+
+@institution_bp.before_request
+def before_request():
+    switch_tenant_by_jwt()
 
 
 @institution_bp.route("/institution", methods=["POST"])

@@ -1,6 +1,7 @@
+from datetime import datetime, timezone
+
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import (
-    JWTManager,
     create_access_token,
     create_refresh_token,
     current_user,
@@ -8,10 +9,9 @@ from flask_jwt_extended import (
     jwt_required,
 )
 
-from model.user import User, Organization, UserOrganization
-from datetime import datetime, timezone
 from database import db
 from model.token import TokenBlocklist
+from model.user import Organization, User, UserOrganization
 
 user_bp = Blueprint("user", __name__)
 

@@ -14,8 +14,14 @@ from model.institution import Institution
 from model.invoice import Invoice
 from model.itinerary import Itinerary
 from routes.responses import create_error_response, create_response
+from routes.middleware import switch_tenant_not_logged_requests
 
 booking_bp = Blueprint("booking", __name__)
+
+
+@booking_bp.before_request
+def before_request():
+    switch_tenant_not_logged_requests()
 
 
 class TravelerSchema(Schema):

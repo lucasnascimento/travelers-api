@@ -7,14 +7,19 @@ from flask_jwt_extended import jwt_required
 from werkzeug.utils import secure_filename
 
 from config import ENVIRONMENT
-from upload import upload_file
 from database import db
 from model.file import File
 from model.itinerary import Itinerary
-
-from routes.responses import create_response, create_error_response
+from routes.middleware import switch_tenant_by_jwt
+from routes.responses import create_error_response, create_response
+from upload import upload_file
 
 itinerary_bp = Blueprint("itinerary", __name__)
+
+
+@itinerary_bp.before_request
+def before_request():
+    switch_tenant_by_jwt()
 
 
 @itinerary_bp.route("/itinerary", methods=["POST"])

@@ -7,10 +7,17 @@ from model.itineraryrule import Rule
 from model.itineraryphoto import Photo
 from model.itinerarydocument import Document
 from routes.responses import create_response, create_error_response
+from routes.middleware import switch_tenant_not_logged_requests
 from flask import request
 from sqlalchemy import asc, desc
 
+
 catalog_bp = Blueprint("catalog", __name__)
+
+
+@catalog_bp.before_request
+def before_request():
+    switch_tenant_not_logged_requests()
 
 
 @catalog_bp.route("/institutions", methods=["GET"])

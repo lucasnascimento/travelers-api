@@ -6,9 +6,15 @@ from database import db
 from model.file import File
 from model.itinerary import Itinerary
 from model.itineraryrule import Rule
+from routes.middleware import switch_tenant_by_jwt
 from routes.responses import create_error_response, create_response
 
 itinerary_rule_bp = Blueprint("itinerary_rule", __name__)
+
+
+@itinerary_rule_bp.before_request
+def before_request():
+    switch_tenant_by_jwt()
 
 
 @itinerary_rule_bp.route("/itinerary/<itinerary_id>/rule", methods=["POST"])

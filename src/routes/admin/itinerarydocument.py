@@ -11,10 +11,16 @@ from database import db
 from model.file import File
 from model.itinerary import Itinerary
 from model.itinerarydocument import Document
+from routes.middleware import switch_tenant_by_jwt
 from routes.responses import create_error_response, create_response
 from upload import upload_file
 
 itinerary_document_bp = Blueprint("itinerary_document", __name__)
+
+
+@itinerary_document_bp.before_request
+def before_request():
+    switch_tenant_by_jwt()
 
 
 @itinerary_document_bp.route("/itinerary/<itinerary_id>/document", methods=["POST"])

@@ -9,8 +9,15 @@ from model.invoice import Invoice
 from model.invoiceevent import InvoiceEvent
 from model.invoiceinstallment import InvoiceInstallment
 from routes.responses import create_response
+from routes.middleware import switch_tenant_not_logged_requests
 
 gateway_bp = Blueprint("gateway", __name__)
+
+
+@gateway_bp.before_request
+def before_request():
+    switch_tenant_not_logged_requests()
+
 
 events_map = {
     "invoice.status_changed": {"paid": "PAID"},

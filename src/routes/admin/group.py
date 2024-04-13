@@ -10,10 +10,16 @@ from config import ENVIRONMENT
 from database import db
 from model.file import File
 from model.group import Group
+from routes.middleware import switch_tenant_by_jwt
 from routes.responses import create_error_response, create_response
 from upload import upload_file
 
 group_bp = Blueprint("group", __name__)
+
+
+@group_bp.before_request
+def before_request():
+    switch_tenant_by_jwt()
 
 
 @group_bp.route("/group", methods=["POST"])
