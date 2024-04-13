@@ -1,9 +1,12 @@
 import logging
 from logging.config import fileConfig
 
-from flask import current_app
-
 from alembic import context
+from flask import current_app
+from sqlalchemy import engine_from_config, text
+from sqlalchemy.pool import NullPool
+
+from model.user import Organization
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -38,16 +41,19 @@ def get_engine_url():
 config.set_main_option("sqlalchemy.url", get_engine_url())
 target_db = current_app.extensions["migrate"].db
 
+
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
+# list of tenants
+tenants = [tenant.schema for tenant in Organization.query.all()]
+
 
 def get_metadata():
     if hasattr(target_db, "metadatas"):
-        # to get public schema metadata only
-        return target_db.metadatas["public"]
+        return target_db.metadatas[None]
     return target_db.metadata
 
 
@@ -71,39 +77,48 @@ def run_migrations_offline():
 
 
 def run_migrations_online():
-    """Run migrations in 'online' mode.
+    """Updated migration script for handling schema based multi-tenancy
 
-    In this scenario we need to create an Engine
-    and associate a connection with the context.
-
+    ref:
+     - https://alembic.sqlalchemy.org/en/latest/cookbook.html#rudimental-schema-level-multi-tenancy-for-postgresql-databases # noqa
     """
 
-    # this callback is used to prevent an auto-migration from being generated
-    # when there are no changes to the schema
-    # reference: http://alembic.zzzcomputing.com/en/latest/cookbook.html
-    def process_revision_directives(context, revision, directives):
-        if getattr(config.cmd_opts, "autogenerate", False):
-            script = directives[0]
-            if script.upgrade_ops.is_empty():
-                directives[:] = []
-                logger.info("No changes in schema detected.")
-
-    conf_args = current_app.extensions["migrate"].configure_args
-    if conf_args.get("process_revision_directives") is None:
-        conf_args["process_revision_directives"] = process_revision_directives
-
-    connectable = get_engine()
+    connectable = engine_from_config(
+        config.get_section(config.config_ini_section),
+        prefix="sqlalchemy.",
+        poolclass=NullPool,
+    )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=get_metadata(), **conf_args
-        )
+        for tenant in tenants:
+            logger.info(f"Migrating tenant: {tenant}")
+            # set search path on the connection, which ensures that
+            # PostgreSQL will emit all CREATE / ALTER / DROP statements
+            # in terms of this schema by default
+            connection.execute(text(f'SET search_path TO "{tenant}"'))
+            # in SQLAlchemy v2+ the search path change needs to be committed
+            connection.commit()
 
-        with context.begin_transaction():
-            context.run_migrations()
+            # make use of non-supported SQLAlchemy attribute to ensure
+            # the dialect reflects tables in terms of the current tenant name
+            connection.dialect.default_schema_name = tenant
+
+            context.configure(
+                connection=connection,
+                target_metadata=get_metadata(),
+            )
+
+            with context.begin_transaction():
+                context.run_migrations()
+
+            # for checking migrate or upgrade is running
+            if getattr(config.cmd_opts, "autogenerate", False):
+                break
 
 
 if context.is_offline_mode():
-    run_migrations_offline()
+    # run_migrations_offline()
+    # avoid running migrations offline since we have multiple schemas and names are taken from db
+    raise Exception("Offline migrations are not supported.")
 else:
     run_migrations_online()

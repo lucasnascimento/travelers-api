@@ -11,6 +11,8 @@ from database import db
 
 class User(db.Model):
     __table_name__ = "user"
+    __bind_key__ = "public"
+    __table_args__ = {"schema": "public"}
 
     id: Mapped[str] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
@@ -47,6 +49,8 @@ class User(db.Model):
 
 class Organization(db.Model):
     __table_name__ = "organization"
+    __bind_key__ = "public"
+    __table_args__ = {"schema": "public"}
 
     id: Mapped[str] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
@@ -71,6 +75,8 @@ class Organization(db.Model):
 
 class UserOrganization(db.Model):
     __table_name__ = "user_organization"
+    __bind_key__ = "public"
+    __table_args__ = {"schema": "public"}
 
     user_id: Mapped[str] = mapped_column(
         UUID(as_uuid=True), db.ForeignKey("user.id"), primary_key=True
