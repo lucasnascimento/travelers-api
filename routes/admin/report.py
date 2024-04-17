@@ -95,6 +95,8 @@ def get_travelers_report(itinerary_id):
                 bt.traveler_extras->>'document-date' as "RG emissão",
                 bt.traveler_extras->>'document-issuer' as "RG emissor",
                 bt.traveler_extras->'documents'->>'rne' as "RNE",
+                bt.traveler_extras->'passaport' as "Passaporte",
+                bt.traveler_extras->'passaport_country' as "Passaporte País",
                 bt.traveler_extras->>'room-grade' as "Unidade",
                 bt.traveler_birthdate as "Data nascimento",
                 case
@@ -104,6 +106,7 @@ def get_travelers_report(itinerary_id):
                 end as "Gênero do viajante",
                 bt.inserted_at::date as "Data da reserva",
                 initcap(b.payer_name) as "Nome do responsável",
+                b.payer_email as "Email do responsável",
                 b.payer_phone as "Telefone do responsável",
                 inst.name as "Nome da instituição",
                 it.title as "Nome do roteiro"
