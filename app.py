@@ -12,17 +12,7 @@ from model.user import User
 
 app = Flask(__name__)
 
-CORS(
-    app,
-    origins=[
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "https://travelersapp-customer-frontend.vercel.app",
-        "https://travelers.app.br",
-        "https://admin.travelers.app.br",
-        "https://terranativa.travelers.app.br",
-    ],
-)
+CORS(app)
 
 # Set the secret key to some random bytes. Keep this really secret!
 app.secret_key = APP_SECRET_KEY
