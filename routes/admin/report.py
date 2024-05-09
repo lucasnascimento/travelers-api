@@ -30,7 +30,10 @@ def get_finnancial_report(itinerary_id):
          	   (select count(*) from booking_traveler bt where bt.booking_id = b.id) as "QtdeViajantes",
          	   coalesce(ii.installment::text, '1') as installment,
          	   coalesce(i.invoice_extras->>'installments', '1') as "installments",
-         	   i.invoice_id
+         	   i.invoice_id,
+         	   b.payer_name as "PagadorNome",
+         	   b.payer_email  as "PagadorEmail",
+         	   b.payer_phone  as "PagadorFone"
            from invoice i
            left join booking b
              on i.booking_id = b.id
@@ -53,7 +56,10 @@ def get_finnancial_report(itinerary_id):
                 "Categoria",
                 "Subcategoria",
                 "method",
-                installment || ' de ' || "installments" as "Parcela"
+                installment || ' de ' || "installments" as "Parcela",
+                "PagadorNome",
+                "PagadorEmail",
+                "PagadorFone"
          from finnancial_report order by "Memo" asc
         """
     )
@@ -95,8 +101,8 @@ def get_travelers_report(itinerary_id):
                 bt.traveler_extras->>'document-date' as "RG emissão",
                 bt.traveler_extras->>'document-issuer' as "RG emissor",
                 bt.traveler_extras->'documents'->>'rne' as "RNE",
-                bt.traveler_extras->'passaport' as "Passaporte",
-                bt.traveler_extras->'passaport_country' as "Passaporte País",
+                coalesce(bt.traveler_extras->>'passport',bt.traveler_extras->>'passaport') as "Passaporte",
+                coalesce(bt.traveler_extras->>'passport_country',bt.traveler_extras->>'passaport_country') as "Passaporte País",
                 bt.traveler_extras->>'room-grade' as "Unidade",
                 bt.traveler_birthdate as "Data nascimento",
                 case
