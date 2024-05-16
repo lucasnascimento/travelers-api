@@ -34,7 +34,11 @@ def create_photo(itinerary_id):
 @jwt_required()
 def get_all_entries(itinerary_id):
     Itinerary.query.get_or_404(itinerary_id)
-    entries = Photo.query.filter_by(itinerary_id=itinerary_id, is_deleted=False).all()
+    entries = (
+        Photo.query.filter_by(itinerary_id=itinerary_id, is_deleted=False)
+        .order_by(Photo.position)
+        .all()
+    )
     data = [entry.to_dict() for entry in entries]
     return create_response(data)
 

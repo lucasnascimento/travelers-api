@@ -30,7 +30,11 @@ def create_institution():
 @institution_bp.route("/institution", methods=["GET"])
 @jwt_required()
 def get_all_institutions():
-    institutions = Institution.query.filter_by(is_deleted=False).all()
+    institutions = (
+        Institution.query.filter_by(is_deleted=False)
+        .order_by(Institution.ranking)
+        .all()
+    )
     data = [institution.to_dict() for institution in institutions]
     return create_response(data)
 
