@@ -1,4 +1,5 @@
 import os
+import urllib.parse
 
 import boto3
 
@@ -21,8 +22,20 @@ def upload_file(file_obj, file_name):
         file_obj.save(path)
         return path
 
+    # Define the file name to be stored in the
+    download_file_name = file_name.split('__')[-1]
+    safe_file_name = urllib.parse.quote(download_file_name)
+    content_disposition = f'attachment; filename="{safe_file_name}"'
+
     path = f"{UPLOAD_FOLDER}/{file_name}"
-    s3_client.upload_fileobj(file_obj, UPLOAD_BUCKET, path)
+    s3_client.upload_fileobj(
+        file_obj,
+        UPLOAD_BUCKET,
+        path,
+        ExtraArgs={
+            'ContentDisposition': content_disposition
+        }
+    )
 
     return path
 
