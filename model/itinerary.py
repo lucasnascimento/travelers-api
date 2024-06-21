@@ -124,15 +124,15 @@ class Itinerary(db.Model):
             result["status"] = "sold_out"
 
         payment_rule = self.get_current_payment_rule()
-        result["purchase_deadline"] = format_if_date(payment_rule.purchase_deadline)
-        result["seat_price"] = payment_rule.seat_price
-        result["installments"] = payment_rule.installments
-        result["pix_discount"] = payment_rule.pix_discount
-
-        brazil_tz = pytz.timezone("America/Sao_Paulo")
-        now = datetime.now(brazil_tz).date()
-        if now > payment_rule.purchase_deadline:
-            result["status"] = "booking_closed"
+        if payment_rule is not None:
+            result["purchase_deadline"] = format_if_date(payment_rule.purchase_deadline)
+            result["seat_price"] = payment_rule.seat_price
+            result["installments"] = payment_rule.installments
+            result["pix_discount"] = payment_rule.pix_discount
+            brazil_tz = pytz.timezone("America/Sao_Paulo")
+            now = datetime.now(brazil_tz).date()
+            if now > payment_rule.purchase_deadline:
+                result["status"] = "booking_closed"
 
         if hasattr(self, "cover") and self.cover is not None:
             result["cover"] = self.cover.to_dict()
@@ -177,6 +177,9 @@ class Itinerary(db.Model):
         # we have to find the first rule that has a purchase_deadline greater than the current date
         # and return if all rules are in the past
         # then return the last rule
+
+        if not payment_rules:  # Check if the list is empty
+            return None
         payment_rule = payment_rules[-1]
         for rule in payment_rules:
             if now <= rule.purchase_deadline:
