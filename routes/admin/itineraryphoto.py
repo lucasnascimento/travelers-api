@@ -1,18 +1,12 @@
-import mimetypes
-import os
-import uuid
-
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
-from werkzeug.utils import secure_filename
 
-from config import ENVIRONMENT, UPLOAD_FOLDER
+from config import ENVIRONMENT
 from database import db
 from model.file import File
 from model.itinerary import Itinerary
 from model.itineraryphoto import Photo
 from routes.responses import create_error_response, create_response
-from upload import upload_file
 
 itinerary_photo_bp = Blueprint("itinerary_photo", __name__)
 
@@ -96,23 +90,7 @@ def upload_file(itinerary_id, photo_id):
         return jsonify(error="no_file_selected"), 400
 
     if file:
-        new_uuid = uuid.uuid4()
-        filename = secure_filename(f"{new_uuid}__{file.filename}")
-        mime_type = mimetypes.guess_type(filename)[0]
-        file.seek(0, os.SEEK_END)
-        size_bytes = file.tell()
-        file.seek(0)
-        path = upload_file(file, filename)
-        new_file = File(
-            id=new_uuid,
-            mime=mime_type,
-            path=path,
-            file_name=filename,
-            region=ENVIRONMENT,
-            size_bytes=size_bytes,
-        )
-        db.session.add(new_file)
-        db.session.flush()
+        new_file = File.create_and_upload(file, ENVIRONMENT)
         db.session.query(Photo).filter_by(id=photo_id).update(
             {"photo_id": str(new_file.id)}
         )
