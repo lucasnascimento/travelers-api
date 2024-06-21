@@ -14,6 +14,10 @@ def upload_file(file_obj, file_name):
             f"static/{UPLOAD_FOLDER}",
             file_name,
         )
+        # Check if the directory exists, if not, create it
+        directory = os.path.dirname(path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
         file_obj.save(path)
         return path
 
