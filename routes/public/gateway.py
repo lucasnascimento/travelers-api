@@ -1,4 +1,5 @@
 import requests
+import re
 from flask import Blueprint, request
 
 from config import IUGU_API_TOKEN
@@ -114,6 +115,20 @@ def updateInvoiceExtrasAndInstallments(db, invoice):
                     invoice_installment.status = (
                         installment["status"] if "status" in installment else None
                     )
+                    # quando há estorno, os dois campos tem valores diferentes
+                    # o campo amount é o valor recalculado descontado o estorno
+                    # o campo amount_cents é o valor original da parcela,
+                    # então temos que atualizar o nosso campo amount com o valor já
+                    # calculado da parcela considerando o estorno em centavos
+                    amount = (
+                        installment["amount"]
+                        if "amount" in installment
+                        else "0"
+                    )
+                    # o campo amount da iugu vem formatado como R$ 1.000,00 por exemplo.
+                    amount_cents = int(re.sub("[^0-9]", "", amount))
+                    invoice_installment.amount_cents = amount_cents
+
                     db.session.add(invoice_installment)
 
     version = invoice.invoice_extras if invoice.invoice_extras else {}
